@@ -10,7 +10,7 @@
       <div class="navbar">
         <div class="navbar-left-container">
           <a href="/">
-            <img class="navbar-brand-logo" src="assets/images/logo.png"></a>
+            <img class="navbar-brand-logo" src="./../assets/images/logo.png"></a>
         </div>
         <div class="navbar-right-container" style="display: flex;">
           <div class="navbar-menu-container">
@@ -21,9 +21,9 @@
             <div class="navbar-cart-container">
               <span class="navbar-cart-count"></span>
               <a class="navbar-link navbar-cart-link" href="/#/cart">
-                <svg class="navbar-cart-logo">
+                <!--<svg class="navbar-cart-logo">
                   <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-cart"></use>
-                </svg>
+                </svg>-->
               </a>
             </div>
           </div>

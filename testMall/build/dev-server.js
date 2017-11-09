@@ -24,6 +24,18 @@ const autoOpenBrowser = !!config.dev.autoOpenBrowser
 const proxyTable = config.dev.proxyTable
 
 const app = express()
+//
+
+var router=express.Router();//拿到服务端路由
+var goodsData=require('./../data/goods.json');//goodsData对象
+router.get("/goods",function(req,res,next){
+     res.json(goodsData);//直接输出json
+})
+app.use(router);//使用路由
+
+//
+
+
 const compiler = webpack(webpackConfig)
 
 const devMiddleware = require('webpack-dev-middleware')(compiler, {

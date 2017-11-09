@@ -1,7 +1,9 @@
 <template>
     <div>
         <header-component/>
-        <breadcrumb-component/>
+        <breadcrumb-component>
+            <span>goods</span>
+        </breadcrumb-component>
         <div class="accessory-result-page accessory-page">
           <div class="container">
             <div class="filter-nav">
@@ -26,13 +28,13 @@
               <div class="accessory-list-wrap">
                 <div class="accessory-list col-4">
                   <ul>
-                    <li>
+                    <li v-for="item in goodsList">
                       <div class="pic">
-                        <a href="#"><img src="static/images/1.jpg" alt=""></a>
+                        <a href="#"><img v-lazy="'static/images/'+item.prodcutImg" alt=""></a>
                       </div>
                       <div class="main">
-                        <div class="name">XX</div>
-                        <div class="price">XX</div>
+                        <div class="name">{{item.productName}}</div>
+                        <div class="price">{{item.prodcutPrice}}</div>
                         <div class="btn-area">
                           <a href="javascript:;" class="btn btn--m">加入购物车</a>
                         </div>
@@ -51,16 +53,30 @@
     import HeaderComponent from './../components/Header'
     import BreadcrumbComponent from './../components/Breadcrumb'
     import FooterComponent from './../components/Footer'
+    import axios from 'axios'
     export default{
         data(){
             return{
-                msg:'hello vue'
+                goodsList:[]
             }
         },
         components:{
             HeaderComponent,
             BreadcrumbComponent,
             FooterComponent,
-        }
+        },
+        mounted: function() {
+            this.$nextTick(function() {
+                this.getGoodsList();
+            })
+        },
+        methods: { 
+            getGoodsList(){
+                axios.get('/goods').then(res=>{
+                    this.goodsList=res.data.result;
+                })
+            }
+        },
     }
 </script>
+
