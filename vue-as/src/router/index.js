@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '../page/home'
+import Detail from '../page/detail'
+import Personal from '../page/personal'
 import About from '@/views/About'
 import PrivacyPolicy from '@/views/PrivacyPolicy'
 import TermsOfService from '@/views/TermsOfService'
@@ -40,12 +42,23 @@ export default new Router({
             name:'TermsOfService',
             component:TermsOfService
         }
-      ] 
+      ]
     },
     {
       path: '/Home',
+      redirect: "/",
       name: 'Home',
       component: Home
+    },
+    {
+      path: '/Detail/:id',
+      name: 'Detail',
+      component: Detail
+    },
+    {
+      path: '/Personal',
+      name: 'Personal',
+      component: Personal
     },
     {
       path: '/edit',
@@ -64,16 +77,32 @@ export default new Router({
             component:PostArticle
         },
         {
+          path: 'article/:id',
+          name: 'ReeditArticle',
+          component: PostArticle
+        },
+        {
             path:'images',
             name:'PostImages',
             component:PostImages
         },
         {
+          path: 'images/:id',
+          name: 'ReeditImages',
+          component: PostImages
+        },
+        {
             path:'videos',
             name:'PostVideos',
             component:PostVideos
-        }
-      ] 
-    }
+        },
+        {
+          path: 'videos/:id',
+          name: 'ReeditVideos',
+          component: PostVideos
+        },
+      ]
+    },
+    
   ]
 })

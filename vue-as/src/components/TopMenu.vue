@@ -1,15 +1,15 @@
 <template>
     <div class="menu">
       <div class="inner fn-clearfix">
-        <a href="/" class="logo">anime same</a>
+        <router-link to="/" class="logo">anime same</router-link>
         <div class="btns">
-          <a href="javascript:void(0);" class="write"  @click="login"><i class="iconfont icon-document"></i> Write A Post </a>
-          <a class="login" id="login" @click="login" v-if="token===null"><i class="iconfont icon-denglu"></i> Log In</a>
+          <a href="javascript:;" class="write"  @click="edit"><i class="iconfont icon-document"></i> Write A Post </a>
+          <a href="javascript:;" class="login" id="login" @click="login" v-if="token===null"><i class="iconfont icon-denglu"></i> Log In</a>
           <a style="color: #FFF;" v-else>
-            <div class="login"><i class="iconfont icon-denglu"></i> {{ nickname }}
+            <div class="login"><a @click="personal" href="javascript:;"><i class="iconfont icon-denglu"></i> {{ nickname }}</a>
               <ul class="login-dropdown">
-                <li><a>My Posts</a></li>
-                <li><a @click="logout">Log Out</a></li>
+                <li><a @click="personal" href="javascript:;">My Posts</a></li>
+                <li><a @click="logout" href="javascript:;">Log Out</a></li>
               </ul>
             </div>
           </a>
@@ -32,14 +32,27 @@
             token: state => state.token
         }),
         methods:{
+          edit(){
+        	  if(this.token){
+        		  this.$router.push('/edit')
+        	  }else{
+        		  this.$store.commit('change')
+        	  }
+          },
           login(){
             this.$store.commit('change')
           },
           logout(){
               this.$store.commit('logout')
+          },
+          personal(){
+            this.$router.push('/Personal')
           }
         }
     }
 </script>
-
-</script>
+<style>
+  .login a{
+    color: #fff;
+  }
+</style>

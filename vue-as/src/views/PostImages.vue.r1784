@@ -46,8 +46,6 @@
                 imagesUrl:[],
                 featruredTags:['mange','review','light novel'] ,
                 tags:[],
-                articleData:[],
-                id:this.$route.params.id,
                 form_data: new FormData()
             }
         },
@@ -55,10 +53,6 @@
             this.$nextTick(function() {
                 this.postType();
                 $('.input-tag').tagsInput();
-                if(typeof this.id !== "undefined"){
-                    this.getContentList();
-                    $('#selectType').attr('disabled','disabled');
-                }
                 this.changeCover()
             })
         },
@@ -151,21 +145,8 @@
                     console.log(error);
                 });
                 
-            },
-            getContentList(){
-              this.$http.get('http://local.api.animesama.com:888/web/feedDetail/'+this.id).then(res=>{
-                this.articleData=res.data;
-                this.title=this.articleData.title;
-                this.articleData.tags.forEach((item, index)=>{
-                    this.tags.push(item.name);
-                })
-                $('.input-tag').importTags(this.tags.toString());
-
-              })
-            },
-            saveEdit(){
-                
             }
+
         }
     }
 </script>

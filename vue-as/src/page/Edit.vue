@@ -10,14 +10,14 @@
         <legend>Edit Post</legend>
         <div class="form-group">
           <label for="type">Type</label>
-          <select class="form-control" @change="jumpType(type)" v-model="type">
+          <select class="form-control" @change="jumpType(type)" v-model="type" id="selectType">
             <option>article</option>
             <option>images</option>
             <option>videos</option>
           </select>
+    
         </div>
-        <router-view @v-type="changeType"></router-view>
-        
+        <router-view @v-type="changeType" ></router-view>
       </fieldset>
     </form>
     </div>
@@ -40,8 +40,8 @@
         },
         mounted: function() {
             this.$nextTick(function() {
-                
-            })
+
+            });
         },
         methods: { 
             jumpType(name){
@@ -50,7 +50,6 @@
             changeType(type){
                 this.type=type;
             }
-            
         }
     }
 </script>

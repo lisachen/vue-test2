@@ -384,6 +384,9 @@ legend{
     border: 1px solid #e6e6e6;
     text-transform: capitalize;
 }
+.form-group select[disabled]{
+    background-color: #eee;
+}
 .form-group input[type="radio"]{
     width: 16px;
     height: 16px;

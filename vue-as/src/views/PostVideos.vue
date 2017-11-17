@@ -33,7 +33,7 @@
         </div>
         <div class="form-group">
             <label>Tages</label>
-            <input type="text" class="form-control" name="tags" id="tags" placeholder="Enter separated tages">
+            <input type="text" class="form-control input-tag" name="tags" id="tags" placeholder="Enter separated tages">
             <p class="tags">Featured Tags  <span v-for="tag in featruredTags" @click="addTage(tag)">{{tag}}</span></p>
         </div>
         <div class="btn-group"><button class="btn btn-l btn-org mr20">Close</button><div class="btn btn-l btn-green" @click="editPost">Post</div></div>
@@ -58,7 +58,7 @@
         mounted: function() {
             this.$nextTick(function() {
                 this.postType();
-                $('#tags').tagsInput();
+                $('.input-tag').tagsInput();
             })
         },
         methods: { 
@@ -66,10 +66,10 @@
                 this.$emit('v-type',this.type);
             },
             addTage(tag){
-                if ($('#tags').tagExist(tag)) {  
+                if ($('.input-tag').tagExist(tag)) {  
                     alert('tag已存在！');
                 }else{
-                   $('#tags').addTag(tag); 
+                   $('.input-tag').addTag(tag); 
                 }    
             },
             changeCover(){
@@ -81,9 +81,9 @@
                 });
             },
             editPost(){
-                let tags=$('#tags').val();
+                let tags=$('.input-tag').val();
                 if(typeof tags!=='undefined'){
-                    this.tags=$('#tags').val().split(",");
+                    this.tags=$('.input-tag').val().split(",");
                 }
                 console.log('type:'+this.type);
                 console.log('category:'+this.category);

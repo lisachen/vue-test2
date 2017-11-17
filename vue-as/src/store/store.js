@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import router from '../router'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -29,6 +30,8 @@ export default new Vuex.Store({
         localStorage.removeItem('nickname');
         state.token = null;
         state.nickname = '';
+        router.push('/')
+        //window.location.href = '/'
     }
   }
 })

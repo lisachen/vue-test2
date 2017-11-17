@@ -8,7 +8,7 @@
             <label>Cover</label>
             <div class="form-control">
                 <img :src="coverUrl" class="cover-img mr10">
-                <input type="file" class="btn-file" id="changeCover" accept="image/png,image/jpeg,image/gif,image/jpg"/>
+                <input type="file" class="btn-file" @change="changeCover" accept="image/png,image/jpeg,image/gif,image/jpg"/>
                 <a class="btn-upload ">Change</a>
             </div>
         </div>
@@ -37,7 +37,7 @@
 </template>
 
 <script>
-    export default{	 	
+    export default{
         data(){
             return{
                 type:'images',
@@ -45,55 +45,38 @@
                 coverUrl:'http://placehold.it/100x100',
                 imagesUrl:[],
                 featruredTags:['mange','review','light novel'] ,
-                tags:[],
-                articleData:[],
-                id:this.$route.params.id,
-                form_data: new FormData()
+                tags:[]
             }
         },
         mounted: function() {
             this.$nextTick(function() {
                 this.postType();
                 $('.input-tag').tagsInput();
-                if(typeof this.id !== "undefined"){
-                    this.getContentList();
-                    $('#selectType').attr('disabled','disabled');
-                }
-                this.changeCover()
             })
         },
-        methods: {    	
+        methods: { 
             postType: function(){
                 this.$emit('v-type',this.type);
             },
             addTage(tag){
                 if ($('.input-tag').tagExist(tag)) {  
-                    alert('Exist!');
+                    alert('tag已存在！');
                 }else{
                    $('.input-tag').addTag(tag); 
                 }    
             },
             changeCover(){
-            	var _this = this
-            	$("#changeCover").change(function(){
-                	var formData = new FormData();
-                	var file = this.files[0];
-                	formData.append("file",file);
-
-                	_this.$http.post('http://local.api.animesama.com:888/web/upload',formData)
-                    .then(function (response) {
-                    	console.log(response);
-                    	_this.coverUrl=response.data.img_url;
-                    }).catch(function (error) {
-                        console.log(error);
-                    });
-            	})
-            	
+                this.$http.post('http://local.api.animesama.com:888/web/upload', {
+                }).then(response=>{
+                    this.coverUrl=response.data[0];
+                }).catch(error=> {
+                    console.log(error);
+                });
             },
             changeImages(e){
                 let inputDOM = this.$refs.inputer;
                 // 通过DOM取文件数据
-                this.fil = inputDOM.files;
+                 this.fil = inputDOM.files;
                 for (var i = 0; i < this.fil.length; i++) {
                     let size = Math.floor(this.fil[i].size / 1024);
                     if (size > 2*1024*1024) {
@@ -101,7 +84,6 @@
                         return false
                     } 
                     this.imagesUrl.push(this.getObjectURL(this.fil[i]));
-                    this.form_data.append('file'+i,this.fil[i]);
                 } 
             },
             getObjectURL(file) {
@@ -116,56 +98,21 @@
                 return url ;
             },
             delImg(index){
-                this.imagesUrl.splice(index, 1);
-                this.form_data.delete("file"+index);
+                this.imagesUrl.splice(index, 1);;
             },      
             editPost(){
                 let tags=$('.input-tag').val();
-                let _this = this;
                 if(typeof tags!=='undefined'){
                     this.tags=$('.input-tag').val().split(",");
-                }else{
-                	this.tags=[]
                 }
-
-                this.form_data.append('des',this.description);
-                this.form_data.append('cover',this.coverUrl);
-                this.form_data.append('tags',this.tags);
-                this.form_data.append('token',this.$store.state.token);
-                this.form_data.append('nickname',this.$store.state.nickname);
-                this.$http.post('http://local.api.animesama.com:888/web/imageCreate',this.form_data)
-                .then(function (response) {
-                	console.log(response);
-                	var code = response.code
-                    if(code > 0){
-                    	alert(response.message)
-                    	if(code == 2016){
-                    		_this.$store.commit('logout')
-                    	}
-                    	return
-                    }else{
-                    	alert('success')
-                    	_this.$router.push('/')
-                   	}
-                }).catch(function (error) {
-                    console.log(error);
-                });
-                
-            },
-            getContentList(){
-              this.$http.get('http://local.api.animesama.com:888/web/feedDetail/'+this.id).then(res=>{
-                this.articleData=res.data;
-                this.title=this.articleData.title;
-                this.articleData.tags.forEach((item, index)=>{
-                    this.tags.push(item.name);
-                })
-                $('.input-tag').importTags(this.tags.toString());
-
-              })
-            },
-            saveEdit(){
+                console.log(this.type);
+                console.log(this.description);
+                console.log(this.coverUrl);
+                console.log(this.imagesUrl);
+                console.log(this.tags);
                 
             }
+
         }
     }
 </script>
