@@ -475,14 +475,16 @@ legend{
     position: absolute;
     right: 0;
     top: 0;
-    color: #82ad2b;
+    color: #fff;
+    background-color: #000;
     width: 16px;
     line-height: 16px;
     text-align: center;
     cursor: pointer;
+    opacity: .3;
 }
-.show-images .img a:hover{
-    background-color: rgba(0,0,0,.3);
+.show-images .img:hover a{
+    opacity: .8;
 }
 .btn{
     display: inline-block;

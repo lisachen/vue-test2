@@ -17,26 +17,26 @@
         <div class="form-group">
           <label>Tages</label>
           <input type="text" class="form-control input-tag" name="tags" id="tags" placeholder="Enter separated tages" v-model="tags" >
-          <p class="tags">Featured Tags  <span v-for="tag in featruredTags" @click="addTage(tag.name)">{{tag.name}}</span></p>
+          <p class="tags">Featured Tags  <span v-for="tag in fdTags" @click="addTage(tag)">{{tag}}</span></p>
         </div>
         <div class="btn-group"><a href="javascript:;" class="btn btn-l btn-org mr20">Close</a>
         <a v-if="typeof id == 'undefined'" href="javascript:;"class="btn btn-l btn-green" @click="editPost">Post</a>
         <a v-else href="javascript:;" class="btn btn-l btn-green" @click="saveEdit">Save</a>
         </div>
     </div>
-
+    
 </template>
 
 <script>
     import {mapState} from 'vuex'
     export default{
+        props:['fdTags'],
         data(){
             return{
                 type:'article',
                 title:'',
                 content:'',
                 category:'3',
-                featruredTags:this.getfeatruredTags() ,
                 tags:[],
                 articleData:[],
                 id:this.$route.params.id
@@ -54,11 +54,6 @@
             })
         },
         methods: { 
-        	getfeatruredTags: function(){
-        		this.$http.get('http://local.api.animesama.com:888/tag/recommand').then(res=>{
-                    this.featruredTags=res.data;
-                })
-        	},
             postType: function(){
                 this.$emit('v-type',this.type);
             },

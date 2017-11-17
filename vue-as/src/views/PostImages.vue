@@ -30,21 +30,25 @@
         <div class="form-group">
           <label>Tages</label>
           <input type="text" class="form-control input-tag" id="tags" placeholder="Enter separated tages">
-          <p class="tags">Featured Tags  <span v-for="tag in featruredTags" @click="addTage(tag)">{{tag}}</span></p>
+          <p class="tags">Featured Tags  <span v-for="tag in fdTags" @click="addTage(tag)">{{tag}}</span></p>
         </div>
-        <div class="btn-group"><button class="btn btn-l btn-org mr20">Close</button><div class="btn btn-l btn-green" @click="editPost">Post</div></div>
+        <div class="btn-group"><a href="javascript:;" class="btn btn-l btn-org mr20">Close</a>
+        <a v-if="typeof id == 'undefined'" href="javascript:;"class="btn btn-l btn-green" @click="editPost">Post</a>
+        <a v-else href="javascript:;" class="btn btn-l btn-green" @click="saveEdit">Save</a>
+        </div>
     </div>
 </template>
 
 <script>
-    export default{	 	
+    
+    export default{	
+        props:['fdTags'], 	
         data(){
             return{
                 type:'images',
                 description:'',
                 coverUrl:'http://placehold.it/100x100',
                 imagesUrl:[],
-                featruredTags:['mange','review','light novel'] ,
                 tags:[],
                 articleData:[],
                 id:this.$route.params.id,
@@ -155,7 +159,9 @@
             getContentList(){
               this.$http.get('http://local.api.animesama.com:888/web/feedDetail/'+this.id).then(res=>{
                 this.articleData=res.data;
-                this.title=this.articleData.title;
+                this.description=this.articleData.des;
+                this.coverUrl=this.articleData.cover_pic;
+                this.imagesUrl=this.articleData.images;
                 this.articleData.tags.forEach((item, index)=>{
                     this.tags.push(item.name);
                 })

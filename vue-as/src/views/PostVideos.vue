@@ -34,7 +34,7 @@
         <div class="form-group">
             <label>Tages</label>
             <input type="text" class="form-control input-tag" name="tags" id="tags" placeholder="Enter separated tages">
-            <p class="tags">Featured Tags  <span v-for="tag in featruredTags" @click="addTage(tag)">{{tag}}</span></p>
+            <p class="tags">Featured Tags  <span v-for="tag in fdTags" @click="addTage(tag)">{{tag}}</span></p>
         </div>
         <div class="btn-group"><button class="btn btn-l btn-org mr20">Close</button><div class="btn btn-l btn-green" @click="editPost">Post</div></div>
     </div>
@@ -42,6 +42,7 @@
 
 <script>
     export default{
+        props:['fdTags'],
         data(){
             return{
                 type:'videos',

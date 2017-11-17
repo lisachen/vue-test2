@@ -17,7 +17,7 @@
           </select>
     
         </div>
-        <router-view @v-type="changeType" ></router-view>
+        <router-view @v-type="changeType" :fdTags='featruredTags'></router-view>
       </fieldset>
     </form>
     </div>
@@ -33,6 +33,7 @@
         data(){
             return{
                type:'',
+               featruredTags:[]
             }
         },
         components:{
@@ -40,7 +41,8 @@
         },
         mounted: function() {
             this.$nextTick(function() {
-
+              this.getfeatruredTags();
+              console.log(this.featruredTags);
             });
         },
         methods: { 
@@ -49,7 +51,14 @@
             },
             changeType(type){
                 this.type=type;
-            }
+            },
+            getfeatruredTags: function(){
+              this.$http.get('http://local.api.animesama.com:888/tag/recommand').then(res=>{
+                  res.data.forEach((item, index)=>{
+                    this.featruredTags.push(item.name)
+                  })
+              })
+            },
         }
     }
 </script>
