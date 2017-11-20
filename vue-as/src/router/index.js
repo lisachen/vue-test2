@@ -78,7 +78,12 @@ export default new Router({
         },
         {
           path: 'article/:id',
-          name: 'ReeditArticle',
+          name: 'Reedit0',
+          component: PostArticle
+        },
+        {
+          path: 'draft/article/:draftId',
+          name: 'DraftArticle',
           component: PostArticle
         },
         {
@@ -86,21 +91,21 @@ export default new Router({
             name:'PostImages',
             component:PostImages
         },
-        {
+/*        {
           path: 'images/:id',
-          name: 'ReeditImages',
+          name: 'Reedit2',
           component: PostImages
-        },
+        },*/
         {
             path:'videos',
             name:'PostVideos',
             component:PostVideos
         },
-        {
+/*        {
           path: 'videos/:id',
-          name: 'ReeditVideos',
+          name: 'Reedit1',
           component: PostVideos
-        },
+        },*/
       ]
     },
     

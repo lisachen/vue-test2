@@ -5,12 +5,11 @@
             <div class="form-control">
                 <label class="label-radio mr20" @click="category=0"><input type="radio" name="cate" checked>Share from YouTube</label>
                 <label class="label-radio" @click="category=1"><input type="radio" name="cate">Upload Video</label>
-                <div v-if="category==0">
+                <div v-show="category==0">
                     <input type="text" v-model="YouTubeUrl" placeholder="Enter YouTube URL">
                 </div>
-                <div  v-if="category==1">
-                    <input type="file" class="btn-file"  accept="iaudio/mpeg,video/mpeg,audio/mpeg,audio/mp4,video/mpeg,video/mpeg"/>
-                    <a class="btn-upload ">Select Video</a>
+                <div  v-show="category==1">
+                    <a class="btn-upload " id="browse">Select Video</a><span>{{ videoUrl }}</span>
                 </div>
             </div>
         </div>
@@ -18,8 +17,8 @@
         <div class="form-group">
             <label>Cover</label>
             <div class="form-control">
-                <img :src="coverUrl" class="cover-img mr10">
-                <input type="file" class="btn-file" @change="changeCover"  accept="image/png,image/jpeg,image/gif,image/jpg"/>
+                <img :src="coverUrl ? coverUrl : './../src/assets/img/cover_video.jpg'" class="cover-img mr10">
+                <input type="file" class="btn-file" id="changeCover"  accept="image/png,image/jpeg,image/gif,image/jpg"/>
                 <a class="btn-upload ">Change</a>
             </div>
         </div>
@@ -36,7 +35,8 @@
             <input type="text" class="form-control input-tag" name="tags" id="tags" placeholder="Enter separated tages">
             <p class="tags">Featured Tags  <span v-for="tag in fdTags" @click="addTage(tag)">{{tag}}</span></p>
         </div>
-        <div class="btn-group"><button class="btn btn-l btn-org mr20">Close</button><div class="btn btn-l btn-green" @click="editPost">Post</div></div>
+        <div class="btn-group">
+        <a href="javascript:;"><div class="btn btn-l btn-green" id="post-submit">Post</div></a></div>
     </div>
 </template>
 
@@ -48,18 +48,111 @@
                 type:'videos',
                 category:'0',
                 YouTubeUrl:'',
-                videoUrl:'',
-                coverUrl:'http://placehold.it/100x100',
+                videoUrl:'mpg,m4v,mp4,flv,3gp,mov,avi,rmvb,mkv,wmv, no mo than 100m',
+                coverUrl:'',
                 title:'',
                 description:'',
                 featruredTags:['mange','review','light novel'] ,
-                tags:[]
+                tags:[],
             }
         },
-        mounted: function() {
+        mounted: function() {	
+        	//视频上传
+        	var _this = this;
+        	var uploader = new plupload.Uploader({ //实例化一个plupload上传对象
+        		browse_button : 'browse',
+        		url : 'http://local.api.animesama.com:888/web/uploadVideo',
+        		chunk_size: 5*1024*1024,
+        		multi_selection: false,
+
+        	});
+        	uploader.init(); //初始化
+
+        	//绑定文件添加进队列事件
+        	uploader.bind('FilesAdded',function(uploader,files){
+        		//更换视频时  只上传最后一个
+        		if(uploader.files.length>1){
+        			uploader.files.splice(0,1)
+        		}
+        		_this.videoUrl = files[0].name;
+        	});
+        	//点提交按钮才上传
+        	$(document).on('click', '#post-submit',function(){
+        		_this.editPost();
+        		//标题不能为空
+        		if(_this.title==''){
+        			alert('title is require!');
+        			return;
+        		}
+        		//封面不能为空
+        		if(_this.coverUrl==''){
+        			alert('cover is require!');
+        			return;
+        		}
+        		//tag不能为空
+        		if(_this.tags==''){
+        			alert('tag is require!');
+        			return;
+        		}
+        		if(_this.category == 1){
+        			//上传视频
+        			if(_this.videoUrl=='mpg,m4v,mp4,flv,3gp,mov,avi,rmvb,mkv,wmv, no mo than 100m'){
+            			alert('video is require!');
+            			return;
+            		}
+        			var res = false;
+            		var objThis = this;
+            		uploader.bind('FileUploaded', function(uploader,file,responseObject) {
+            			res = JSON.parse(responseObject.response);
+            			console.log(res);
+            			if(res && res.original_url){
+            				var videoUrl=res.original_url;
+                            _this.$http.post('http://local.api.animesama.com:888/web/videoCreate',{
+                            	v_type:1,
+                            	videoUrl:videoUrl,
+                            	title: _this.title,
+                                cover:_this.coverUrl,
+                                tags:_this.tags,
+                                des: _this.description,
+                                nickname: _this.$store.state.nickname,
+                                token: _this.$store.state.token
+                            }).then(function (response) {
+                            	var code = response.code
+                                if(code > 0){
+                                	alert(response.message)
+                                	if(code == 2016){
+                                		_this.$store.commit('logout')
+                                	}
+                                	return
+                                }else{
+                                	alert('success')
+                                	_this.$router.push('/')
+                               	}
+                            	
+                            }).catch(function (error) {
+                                console.log(error);
+                            });
+            			}else{
+            				alert('upload video failed');
+            				return;
+            			}
+            			
+            		});
+            		uploader.start();
+        		}else{
+        			//youtube
+        			if(_this.YouTubeUrl==''){
+            			alert('video url is require!');
+            			return;
+            		}
+        		}
+
+        		
+        	});
             this.$nextTick(function() {
                 this.postType();
                 $('.input-tag').tagsInput();
+                this.changeCover()
             })
         },
         methods: { 
@@ -74,29 +167,40 @@
                 }    
             },
             changeCover(){
-                this.$http.post('http://local.api.animesama.com:888/web/upload').then(response=>{
-                    console.log(response);
-                    this.coverUrl=response.data[0];
-                }).catch(error=> {
-                    console.log(error);
-                });
+            	var _this = this
+            	$("#changeCover").change(function(){
+                	var formData = new FormData();
+                	var file = this.files[0];
+                	formData.append("file",file);
+                	formData.append('token',_this.$store.state.token);
+                	formData.append('nickname',_this.$store.state.nickname);
+
+                	_this.$http.post('http://local.api.animesama.com:888/web/upload',formData)
+                    .then(function (response) {
+                    	console.log(response);
+                    	var code = response.code
+                        if(code > 0){
+                        	alert(response.message)
+                        	if(code == 2016){
+                        		_this.$store.commit('logout')
+                        	}
+                        	return
+                        }else{
+                        	_this.coverUrl=response.data.img_url;
+                       	}
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+            	})
             },
             editPost(){
                 let tags=$('.input-tag').val();
                 if(typeof tags!=='undefined'){
                     this.tags=$('.input-tag').val().split(",");
-                }
-                console.log('type:'+this.type);
-                console.log('category:'+this.category);
-                if(this.category==0){
-                    console.log('YouTubeUrl:'+this.YouTubeUrl);
                 }else{
-                    console.log('videoUrl:'+this.videoUrl);
+                	this.tags = [];
                 }
-                console.log('coverUrl:'+this.coverUrl);
-                console.log('title:'+this.title);
-                console.log('description:'+this.description);
-                console.log('tags:'+this.tags);
+                
             }
         }
     }

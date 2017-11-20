@@ -7,7 +7,7 @@
         <div class="form-group">
             <label>Cover</label>
             <div class="form-control">
-                <img :src="coverUrl" class="cover-img mr10">
+                <img :src="coverUrl ? coverUrl : './../src/assets/img/cover_images.jpg'" class="cover-img mr10">
                 <input type="file" class="btn-file" id="changeCover" accept="image/png,image/jpeg,image/gif,image/jpg"/>
                 <a class="btn-upload ">Change</a>
             </div>
@@ -32,9 +32,8 @@
           <input type="text" class="form-control input-tag" id="tags" placeholder="Enter separated tages">
           <p class="tags">Featured Tags  <span v-for="tag in fdTags" @click="addTage(tag)">{{tag}}</span></p>
         </div>
-        <div class="btn-group"><a href="javascript:;" class="btn btn-l btn-org mr20">Close</a>
-        <a v-if="typeof id == 'undefined'" href="javascript:;"class="btn btn-l btn-green" @click="editPost">Post</a>
-        <a v-else href="javascript:;" class="btn btn-l btn-green" @click="saveEdit">Save</a>
+        <div class="btn-group">
+            <a href="javascript:;"class="btn btn-l btn-green" @click="editPost">Post</a>
         </div>
     </div>
 </template>
@@ -47,12 +46,14 @@
             return{
                 type:'images',
                 description:'',
-                coverUrl:'http://placehold.it/100x100',
+                coverUrl:'',
                 imagesUrl:[],
                 tags:[],
                 articleData:[],
-                id:this.$route.params.id,
-                form_data: new FormData()
+                //id:this.$route.params.id,
+                form_data: new FormData(),
+                count:0
+
             }
         },
         mounted: function() {
@@ -63,7 +64,7 @@
                     this.getContentList();
                     $('#selectType').attr('disabled','disabled');
                 }
-                this.changeCover()
+                this.changeCover();
             })
         },
         methods: {    	
@@ -83,11 +84,22 @@
                 	var formData = new FormData();
                 	var file = this.files[0];
                 	formData.append("file",file);
+                	formData.append('token',_this.$store.state.token);
+                	formData.append('nickname',_this.$store.state.nickname);
 
                 	_this.$http.post('http://local.api.animesama.com:888/web/upload',formData)
                     .then(function (response) {
                     	console.log(response);
-                    	_this.coverUrl=response.data.img_url;
+                    	var code = response.code
+                        if(code > 0){
+                        	alert(response.message)
+                        	if(code == 2016){
+                        		_this.$store.commit('logout')
+                        	}
+                        	return
+                        }else{
+                        	_this.coverUrl=response.data.img_url;
+                       	}
                     }).catch(function (error) {
                         console.log(error);
                     });
@@ -106,6 +118,7 @@
                     } 
                     this.imagesUrl.push(this.getObjectURL(this.fil[i]));
                     this.form_data.append('file'+i,this.fil[i]);
+                    this.count ++;
                 } 
             },
             getObjectURL(file) {
@@ -122,6 +135,7 @@
             delImg(index){
                 this.imagesUrl.splice(index, 1);
                 this.form_data.delete("file"+index);
+                this.count --;
             },      
             editPost(){
                 let tags=$('.input-tag').val();
@@ -131,7 +145,22 @@
                 }else{
                 	this.tags=[]
                 }
-
+                if(this.coverUrl==''){
+        			alert('cover is require!');
+        			return;
+        		}
+                if(this.description==''){
+        			alert('description is require!');
+        			return;
+        		}
+                if(this.tags==''){
+        			alert('tags is require!');
+        			return;
+        		} 
+                if(this.count < 4){
+                	alert('need 4 images!');
+        			return;
+                }
                 this.form_data.append('des',this.description);
                 this.form_data.append('cover',this.coverUrl);
                 this.form_data.append('tags',this.tags);
@@ -156,7 +185,7 @@
                 });
                 
             },
-            getContentList(){
+            /*getContentList(){
               this.$http.get('http://local.api.animesama.com:888/web/feedDetail/'+this.id).then(res=>{
                 this.articleData=res.data;
                 this.description=this.articleData.des;
@@ -171,7 +200,7 @@
             },
             saveEdit(){
                 
-            }
+            }*/
         }
     }
 </script>
