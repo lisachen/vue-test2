@@ -258,7 +258,7 @@ body {
     max-width: 310px;
     /* max-height: 140px; */
     margin-bottom: 5px;
-    /* overflow: hidden; */
+    overflow: hidden;
     text-align: center;
     min-height: 100px;
 }
@@ -621,6 +621,10 @@ legend{
 .user-info .btns-my a:hover{
     background-image: none;
     box-shadow: inset 0 0 6px rgba(0,0,0,.1);
+}
+.user-info .btns-my a.router-link-exact-active{
+    background-color: #f5b436;
+    color: #fff;
 }
 /*-- article-edit-list --*/
 .article-edit-list{

@@ -63,6 +63,8 @@ axios.interceptors.response.use(function (response) {
 	return Promise.reject(error);
 });
 
+axios.defaults.baseURL = 'http://local.api.animesama.com:888'
+
 Vue.prototype.$http = axios
 /* eslint-disable no-new */
 new Vue({

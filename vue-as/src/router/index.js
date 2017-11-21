@@ -1,17 +1,21 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+
 import Home from '../page/home'
-import Detail from '../page/detail'
-import Personal from '../page/personal'
 import About from '@/views/About'
 import PrivacyPolicy from '@/views/PrivacyPolicy'
 import TermsOfService from '@/views/TermsOfService'
+
 import Edit from '@/page/Edit'
 import PostArticle from '@/views/PostArticle'
 import PostImages from '@/views/PostImages'
 import PostVideos from '@/views/PostVideos'
 
+import Personal from '../page/personal'
+import MyPosts from '@/views/MyPosts'
+import MyDrafts from '@/views/MyDrafts'
 
+import Detail from '../page/detail'
 
 Vue.use(Router)
 export default new Router({
@@ -56,9 +60,26 @@ export default new Router({
       component: Detail
     },
     {
-      path: '/Personal',
+      path: '/personal',
+      redirect: "/personal/posts",
       name: 'Personal',
-      component: Personal
+      components: {
+        default:Personal,
+        MyPosts,
+        MyDrafts
+      },
+      children:[
+        {
+            path:'posts',
+            name:'MyPosts',
+            component:MyPosts
+        },
+        {
+            path:'drafts',
+            name:'MyDrafts',
+            component:MyDrafts
+        }
+      ]  
     },
     {
       path: '/edit',
@@ -83,7 +104,7 @@ export default new Router({
         },
         {
           path: 'draft/article/:draftId',
-          name: 'DraftArticle',
+          name: 'Draft0',
           component: PostArticle
         },
         {

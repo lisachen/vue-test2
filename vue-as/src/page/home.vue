@@ -79,7 +79,7 @@
         },
         methods: {
             getArticleList(){
-                this.$http.get('http://local.api.animesama.com:888/web/recommend').then(res=>{
+                this.$http.get('/web/recommend').then(res=>{
                     this.articleList=res.data;
                 })
             }
