@@ -15,9 +15,10 @@ import VueVideoPlayer from 'vue-video-player'
 import VueYouTubeEmbed from 'vue-youtube-embed'
 import VueSee from 'vue-see'
 import store from './store/store'
+//import {baseUrl} from './config'
 
-// import ElementUI from './element-ui'
-// import 'element-ui/lib/theme-chalk/index.css'
+//import ElementUI from './element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
 if(localStorage.token){
 	console.log(localStorage.token)
 	store.commit('username', localStorage.nickname)
@@ -37,7 +38,7 @@ Vue.use(VueVideoPlayer)
 Vue.use(VueYouTubeEmbed)
 Vue.use(Vuex)
 Vue.use(MintUI)
-// Vue.use(ElementUI)
+//Vue.use(ElementUI)
 Vue.config.productionTip = false
 
 axios.interceptors.request.use(
@@ -63,7 +64,7 @@ axios.interceptors.response.use(function (response) {
 	return Promise.reject(error);
 });
 
-axios.defaults.baseURL = 'http://local.api.animesama.com:888'
+axios.defaults.baseURL = baseUrl
 
 Vue.prototype.$http = axios
 /* eslint-disable no-new */
@@ -74,4 +75,3 @@ new Vue({
   template: '<App/>',
   components: { App }
 })
- 

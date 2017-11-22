@@ -103,7 +103,7 @@ export default new Router({
           component: PostArticle
         },
         {
-          path: 'draft/article/:draftId',
+          path: 'draft/:draftId',
           name: 'Draft0',
           component: PostArticle
         },

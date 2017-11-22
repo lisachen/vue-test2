@@ -239,31 +239,35 @@ body {
     right: 2px;
 }
 /*-- article-list --*/
-.article-list {
-    margin-right: -2%;
-    overflow: hidden;
+.article-list{
+       -moz-column-count: 3;
+    -webkit-column-count: 3;
+            column-count: 3;
+       -moz-column-gap: 1.5em;
+    -webkit-column-gap: 1.5em;
+            column-gap: 1.5em;
 }
 .article-list .item{
-    float: left;
-    width:31%;
-    margin-bottom: 20px;
-    /* min-height: 327px; */
-    margin-right: 2.3%;
-    padding: 6px;
+    margin: 0 0 1.5em 0;
+    padding: .6em;
     border: 1px solid #e6e6e6;
     border-radius: 4px;
+    -moz-page-break-inside: avoid;
+    -webkit-column-break-inside: avoid;
+    break-inside: avoid;
 }
 .article-list .preview{
     display: block;
     max-width: 310px;
-    /* max-height: 140px; */
+    min-height: 100px;
     margin-bottom: 5px;
     overflow: hidden;
     text-align: center;
-    min-height: 100px;
 }
 .article-list .preview img{
     transition: all .3s ease;
+    -webkit-backface-visibility: hidden;
+    -webkit-transform-style: preserve-3d;
 }
 .article-list .preview:hover img{
     transform: scale(1.2);
@@ -294,13 +298,13 @@ body {
 }
 .article-list .tt{
     display: -webkit-box;
-    display:box;
+    display:         box;
     overflow: hidden;
     color: #272727;
     -webkit-line-clamp: 2;
-    line-clamp: 2;
+            line-clamp: 2;
     -webkit-box-orient: vertical;
-    box-orient: vertical;
+            box-orient: vertical;
 }
 .article-list .tt:hover{
     color: #1f90c7;
@@ -308,14 +312,14 @@ body {
 }
 .article-list .detail{
     display: -webkit-box;
-    display: box;
+    display:         box;
     overflow: hidden;
     font-size: 13px;
     color: #7c7c7c;
     -webkit-line-clamp: 3;
-    line-clamp: 3;
+            line-clamp: 3;
     -webkit-box-orient: vertical;
-    box-orient: vertical;
+            box-orient: vertical;
 }
 .tags span{
     display: inline-block;
@@ -328,14 +332,12 @@ body {
     text-transform: capitalize;
     background-color: #efefef;
     border-radius: 10px;
-    /*ÃƒÆ’Ã‚Â©Ãƒâ€šÃ‚Â¼Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¦Ãƒâ€šÃ‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã‚Â¥ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂºÃƒâ€šÃ‚Â¾ÃƒÆ’Ã‚Â¦Ãƒâ€šÃ‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡*/
-    cursor:pointer;
-    /*ÃƒÆ’Ã‚Â¥Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â»ÃƒÆ’Ã‚Â©ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢Ãƒâ€šÃ‚Â¤ÃƒÆ’Ã‚Â©ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â°ÃƒÆ’Ã‚Â¤Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â­*/
-    -moz-user-select:none;/*ÃƒÆ’Ã‚Â§Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â«ÃƒÆ’Ã‚Â§ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¹Ãƒâ€šÃ‚Â*/
-    -webkit-user-select:none;/*webkitÃƒÆ’Ã‚Â¦Ãƒâ€šÃ‚ÂµÃƒâ€šÃ‚ÂÃƒÆ’Ã‚Â¨Ãƒâ€šÃ‚Â§Ãƒâ€¹Ã¢â‚¬Â ÃƒÆ’Ã‚Â¥ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢Ãƒâ€šÃ‚Â¨*/
-    -ms-user-select:none;/*IE10*/
-    -khtml-user-select:none;/*ÃƒÆ’Ã‚Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬ÂÃƒâ€šÃ‚Â©ÃƒÆ’Ã‚Â¦Ãƒâ€¦Ã¢â‚¬Å“Ãƒâ€¦Ã‚Â¸ÃƒÆ’Ã‚Â¦Ãƒâ€šÃ‚ÂµÃƒâ€šÃ‚ÂÃƒÆ’Ã‚Â¨Ãƒâ€šÃ‚Â§Ãƒâ€¹Ã¢â‚¬Â ÃƒÆ’Ã‚Â¥ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢Ãƒâ€šÃ‚Â¨*/
-    user-select:none;
+    cursor: pointer;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+     -khtml-user-select: none;
 }
 .btn-more{
     display: inline-block;
@@ -347,6 +349,7 @@ body {
     background-color: #f5b436;
     border-radius: 23px;
 }
+
 /*-- edit-post --*/
 .edit-post{
     padding: 40px 60px;
@@ -373,9 +376,9 @@ legend{
     line-height: 38px;
     color: #7c7c7c;
 }
-.form-group input[type="text"],
-.form-group input[type="email"],
-.form-group input[type="password"],
+.form-group input[type='text'],
+.form-group input[type='email'],
+.form-group input[type='password'],
 .form-group select{
     width: 340px;
     height: 38px;
@@ -387,16 +390,17 @@ legend{
 .form-group select[disabled]{
     background-color: #eee;
 }
-.form-group input[type="radio"]{
+.form-group input[type='radio']{
     width: 16px;
     height: 16px;
-    vertical-align: middle;
     margin-right: 5px;
+    vertical-align: middle;
 }
-.form-group .tagsinput,.form-group textarea{
+.form-group .tagsinput,
+.form-group textarea{
     display: inline-block;
-    vertical-align: top;
     width: 340px;
+    vertical-align: top;
     border: 1px solid #e6e6e6;
 }
 .form-group .form-control{
@@ -404,8 +408,8 @@ legend{
     vertical-align: top;
 }
 .form-group textarea{
-    padding: 5px;
     min-height: 60px;
+    padding: 5px;
 }
 .form-group .tags{
     margin-top: 10px;
@@ -415,41 +419,41 @@ legend{
 .form-group .btn-file{
     position: absolute;
     width: 76px;
-    cursor: pointer;
-    font-size: 0;
-    padding: 0;
     height: 30px;
-    border: none;
+    padding: 0;
     opacity: 0;
+    border: none;
+    font-size: 0;
+    cursor: pointer;
 }
 .form-group .btn-upload{
-    color: inherit;
     display: inline-block;
-    background-color: inherit;
-    padding: 3px 12px;
-    white-space: nowrap;
-    vertical-align: top;
-    cursor: pointer;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    border: 1px solid #ddd;
-    border-radius: 5px;
     margin-right: 4px;
     margin-bottom: 4px;
-    cursor: pointer;
+    padding: 3px 12px;
+    vertical-align: top;
+    border: 1px solid #ddd;
+    color: inherit;
     color: #666;
+    white-space: nowrap;
+    background-color: inherit;
+    border-radius: 5px;
+    cursor: pointer;
+    cursor: pointer;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
 }
 .form-group-editor #editor{
     width: 100%;
     height: 500px;
     border: 1px solid #e6e6e6;
 }
-.form-group-upload-vadio input[type="text"]{
+.form-group-upload-vadio input[type='text']{
+    width: 220px;
     height: 30px;
     line-height: 30px;
-    width: 220px;
 }
 .form-group-editor #upload_img{
     width: 140px;
@@ -467,8 +471,8 @@ legend{
 .show-images .img{
     position: relative;
     display: inline-block;
-    margin-right: 10px;
     margin-top: 10px;
+    margin-right: 10px;
 }
 .form-group .show-images img{
     width: 80px;
@@ -476,15 +480,15 @@ legend{
 }
 .show-images .img a{
     position: absolute;
-    right: 0;
     top: 0;
-    color: #fff;
-    background-color: #000;
+    right: 0;
     width: 16px;
     line-height: 16px;
-    text-align: center;
-    cursor: pointer;
     opacity: .3;
+    color: #fff;
+    text-align: center;
+    background-color: #000;
+    cursor: pointer;
 }
 .show-images .img:hover a{
     opacity: .8;
@@ -514,20 +518,20 @@ legend{
 }
 .article-group textarea{
     width: 100%;
+    overflow-y: visible;;
     vertical-align: top;
     border: none;
-    resize:none;
-    overflow-y:visible
+    resize: none;
 }
 .article-group .edit{
-    text-align: right;
     line-height: 30px;
+    text-align: right;
 }
 .article-group .edit .iconfont{
     margin: 0 5px;
-    cursor: pointer;
-    color: #999;
     font-size: 26px;
+    color: #999;
+    cursor: pointer;
 }
 .article-group .edit .icon-shanchu{
     display: none;
@@ -548,11 +552,15 @@ legend{
     height: 30px;
     opacity: 0;
 }
+
 /*-- wrapper-center --*/
-.wrapper-center .content .inner,
-.wrapper-article .content .inner{
+.wrapper-center .content .inner{
     border: 1px solid #e6e6e6;
     background-color: #efefef;
+    border-radius: 5px;
+}
+.wrapper-article .content .inner{
+    border: 1px solid #e6e6e6;
     border-radius: 5px;
 }
 .side{
@@ -723,7 +731,7 @@ legend{
 .icon-pinterest{color: #c41f25;}
 .icon-tumblr{color: #385a74;}
 .article{
-    padding:30px 50px;
+    padding:30px 80px;
 }
 .article .tt{
     font-size: 28px;
@@ -750,9 +758,7 @@ legend{
     font-size: 20px;
     color: #272727;
 }
-.wrapper-article .main{
-    width: 960px;
-}
+
 .wrapper-article .bt .download a{
     margin-left: 350px;
     background-color: #f5b436
@@ -908,9 +914,16 @@ legend{
         height: auto;
         background: url(../img/banner-1024.jpg) no-repeat center top;
     }
+    .wrapper-index .content{
+        padding: 50px 0;
+    }
     .banner .inner{
         width: 376px;
         margin: 20px auto 30px auto;
+    }
+    .article-list{
+        -webkit-column-gap: 1em;
+        column-gap: 1em;
     }
     .footer{
         background-image: none;
@@ -919,7 +932,7 @@ legend{
         width: 100%;
         border-left: none;
     }
-    .side,.wrapper-article .side{
+    .wrapper-article .side{
         position: fixed;
         height: 58px;
         bottom: 0;
@@ -941,8 +954,12 @@ legend{
     .wrapper-article .bt .download a{
         margin-left: 50px;
     }
+    .wrapper-center .side{
+        width: 100%;
+    }
 }
 @media only screen and (max-width:1024px) and (min-width: 500px){
+
     .user-info{
         position: relative;
         padding: 10px;
@@ -973,10 +990,21 @@ legend{
         padding: 30px 0;
     }
     .content .inner{
-        width: 90%;
+        width: 94%;
+    }
+    .wrapper-index .content{
+        padding: 40px 0;
+    }
+    .article-list{
+        -moz-column-count:2;
+        -webkit-column-count:2; 
+        column-count:2; 
+        -webkit-column-gap: .7em;
+        column-gap: .7em;
     }
     .article-list .item{
-        width: 47%;
+        padding: .2em;
+        margin-bottom: 1em;
     }
     .edit-post{
         padding: 0;
@@ -991,6 +1019,14 @@ legend{
     .article-edit-list .edit-btns .mr10{
         margin-right: 2px;
     }
+    .footer .tabs a{font-size: 14px;}
+    
+    .user-info{
+        padding: 40px 10px;
+    }
+    .article-edit-list{
+        padding: 0 10px;
+    }
 }
 @media only screen and (max-width:500px) {
     .form-group{
@@ -999,15 +1035,14 @@ legend{
     .form-group label{
         display: block;
     }
-    .form-group input,
-    .form-group select{
+    .form-group input[type='text'], .form-group input[type='email'], .form-group input[type='password'], .form-group select{
         width: 100%;
     }
     .form-group .tags{
         margin-left: 0;
     }
     .article{
-        padding: 0 20px;
+        padding:  20px;
     }
     .wrapper-article .bt .download a{
         margin-left: 0;
@@ -1021,6 +1056,15 @@ legend{
         float: none;
         width: 108px;
         margin: 0 auto;
+    }
+    .menu .btns{
+        font-size: 12px;
+    }
+    .article-list .time{
+        float: left;
+    }
+    .article-list .info{
+        margin-bottom: 0;
     }
 }
 @media only screen and (max-width:400px) {
@@ -1045,15 +1089,9 @@ legend{
         width: 108px;
         margin: 0 auto;
     }
-    .content .inner{
-        width: 88%;
-    }
-    .article-list .item{
-        width: 96%;
-        margin-right: 0;
-    }
+
     .btn-more{
-        margin-top: 0;
+        margin-top: 20px;
         padding: 8px 40px;
         border-radius: 28px;
     }

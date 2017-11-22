@@ -38,7 +38,7 @@
       }
     },
     components:{
-      TopMenu
+      TopMenu,
     },
     created: function() {
       this.$nextTick(function() {
@@ -48,15 +48,15 @@
     methods: {
       getInfo(id,index){
     	  var _this = this
-    	  this.$http.post('http://local.api.animesama.com:888/web/myInfo',{
+    	  this.$http.post('/web/myInfo',{
     		  token : this.$store.state.token,
     		  nickname : this.$store.state.nickname
     	  }).then(function (response) {
           	console.log(response);
           	var code = response.code
             if(code > 0){
-            	alert(response.message)
             	if(code == 2016){
+            		alert('You need login')
             		_this.$store.commit('logout')
             	}
             	return

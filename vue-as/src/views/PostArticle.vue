@@ -69,9 +69,9 @@
                    $('.input-tag').addTag(tag); 
                 } 
             },
-            getContent(){
-                var tags=$('.input-tag').val();
-                var _this = this;
+
+            post(url,feed_id,draft_id){
+            	var tags=$('.input-tag').val();
 
                 if(typeof tags!=='undefined'){
                     this.tags=$('.input-tag').val().split(",");
@@ -79,22 +79,17 @@
                     this.tags=[]
                 }
                 this.content=$('#editor').contents().find('body').html();
-            },
-            editPost(){
-                this.getContent();
-
-                //内容不能为空
+                
+               	//内容不能为空
                 if(this.content==''){
-        			alert('content is require!');
-        			return;
-        		}
-        		//tag不能为空
-        		if(this.tags==''){
-        			alert('tag is require!');
-        			return;
-        		}
-
-                this.$http.post('http://local.api.animesama.com:888/web/feedCreate', {
+           			alert('content is require!');
+           			return false;
+           		}
+                
+            	var _this = this;
+            	this.$http.post(url, {
+            		feed_id: feed_id,
+            		id:draft_id,
                     title: this.title,
                     content:this.content,
                     tags:this.tags,
@@ -106,9 +101,11 @@
                     console.log(response);
                     var code = response.code
                     if(code > 0){
-                    	alert(response.message)
                     	if(code == 2016){
+                    		alert('You need login')
                     		_this.$store.commit('logout')
+                    	}else{
+                    		alert('failed')
                     	}
                     	return
                     }else{
@@ -119,7 +116,7 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-            },
+            },   
             editorContent(){	
             	var _this = this
                 var $d;
@@ -138,13 +135,15 @@
                 	formData.append('token',_this.$store.state.token);
                 	formData.append('nickname',_this.$store.state.nickname);
 
-                    _this.$http.post('http://local.api.animesama.com:888/web/upload',formData)
+                    _this.$http.post('/web/upload',formData)
                     .then(function (response) {
                     	var code = response.code
                         if(code > 0){
-                        	alert(response.message)
                         	if(code == 2016){
+                        		alert('You need login')
                         		_this.$store.commit('logout')
+                        	}else{
+                        		alert('failed')
                         	}
                         	return
                         }else{
@@ -156,76 +155,86 @@
                 });
             },
             getContentList(){
-              this.$http.get('http://local.api.animesama.com:888/web/feedDetail/'+this.id).then(res=>{
-                this.articleData=res.data;
-                this.title=this.articleData.title;
-                let $d = $("#editor")[0].contentWindow.document;
-                let content=this.articleData.content_text.replace(/<img src=/g, "<img style='max-width:200px' src=");
-                $("body", $d).append(content);
-                this.articleData.tags.forEach((item, index)=>{
-                    this.tags.push(item.name);
+            	this.$http.post('/web/feedEditDetail/', {
+            		feed_id: this.id,
+                    nickname: this.$store.state.nickname,
+                    token: this.$store.state.token
                 })
-                $('.input-tag').importTags(this.tags.toString());
-
-              })
+                .then(res=>{
+                    console.log(res);
+                    var code = res.code
+                    if(code > 0){
+                    	if(code == 2016){
+                    		alert('You need login')
+                    		this.$store.commit('logout')
+                    	}
+                    	return
+                    }else{
+                    	this.articleData=res.data;
+    	                this.title=this.articleData.title;
+    	                let $d = $("#editor")[0].contentWindow.document;
+    	                let content=this.articleData.content_text.replace(/<img src=/g, "<img style='max-width:200px' src=");
+    	                $("body", $d).append(content);
+    	                this.articleData.tags.forEach((item, index)=>{
+    	                    this.tags.push(item.name);
+    	                })
+    	                $('.input-tag').importTags(this.tags.toString());
+    	                this.draftId = this.articleData.draft_id;
+                   	}
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });                
             },
-            saveEdit(){
-                this.getContent();
-                //保存修改
+            editPost(){  //发帖  带上草稿id  发布成功后删除草稿
+           		if(this.tags==''){
+           			alert('tag is require!');
+           			return false;
+           		}
+           		this.post('/web/feedCreate',0,this.draftId);
             },
-            saveDraft(){//保存为草稿
-                this.getContent();
-                //查稿保存到cookie
-                let contentData=[
-                    {
-                        type:this.type,
-                        title: this.title,
-                        content:this.content,
-                        tags:this.tags,
-                        category: this.category,
-                        nickname: this.$store.state.nickname,
-                        token: this.$store.state.token
-                    }
-                ];
-                let str = JSON.stringify(contentData[0]);//将json转为字符串；
-
-                if(typeof this.draftId !== "undefined"){
-                    this.setCookie('draft'+this.draftId, "", -1);  
-                }
-                this.draftId=Date.parse(new Date())/1000;
-                let  draft='draft'+this.draftId;
-                this.setCookie(draft, str,365);
-
-                this.$router.push('/edit/draft/article/'+this.draftId);  
+            saveEdit(){   //修改帖子  带上草稿id  修改成功后删除草稿
+            	if(this.tags==''){
+           			alert('tag is require!');
+           			return false;
+           		}
+                this.post('/web/feedEdit',this.id,this.draftId);
             },
-            setCookie(name, value, exdays) {
-                var d = new Date();
-                d.setTime(d.getTime() + (exdays*24*60*60*1000));
-                var expires = "expires="+d.toUTCString();
-                document.cookie = name + "=" + value + "; " + expires;
+            saveDraft(){  //保存草稿
+            	this.post('/web/draftCreate',this.id,this.draftId);
             },
-            getCookie(name){
-                var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
-                if(arr=document.cookie.match(reg)){
-                    return unescape(arr[2]);
-                }else{
-                    return null;
-                }
-            },
+            
             getDraftContentList(){
-                let draft_str = this.getCookie("draft"+this.draftId);  
-                this.articleData = JSON.parse(draft_str); 
-                this.title=this.articleData.title;
-                let $d = $("#editor")[0].contentWindow.document;
-                let content=this.articleData.content_text;
-                if(typeof content !=='undefined'){
-                    $("body", $d).append(content.replace(/<img src=/g, "<img style='max-width:200px' src="));
-                }
-                this.articleData.tags.forEach((item, index)=>{
-                    this.tags.push(item);
+            	this.$http.post('/web/draftDetail/', {
+            		id: this.draftId,
+                    nickname: this.$store.state.nickname,
+                    token: this.$store.state.token
                 })
-                $('.input-tag').importTags(this.tags.toString());
-
+                .then(res=>{
+                    console.log(res);
+                    var code = res.code
+                    if(code > 0){
+                    	if(code == 2016){
+                    		alert('You need login')
+                    		this.$store.commit('logout')
+                    	}
+                    	return
+                    }else{
+                    	this.articleData=res.data;
+    	                this.title=this.articleData.title;
+    	                let $d = $("#editor")[0].contentWindow.document;
+    	                let content=this.articleData.content_text.replace(/<img src=/g, "<img style='max-width:200px' src=");
+    	                $("body", $d).append(content);
+    	                this.articleData.tags.forEach((item, index)=>{
+    	                    this.tags.push(item.name);
+    	                })
+    	                $('.input-tag').importTags(this.tags.toString());
+    	                this.draftId = this.articleData.draft_id;
+                   	}
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });         
             },
 
         }

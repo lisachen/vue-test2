@@ -61,7 +61,7 @@
         	var _this = this;
         	var uploader = new plupload.Uploader({ //实例化一个plupload上传对象
         		browse_button : 'browse',
-        		url : 'http://local.api.animesama.com:888/web/uploadVideo',
+        		url : '/web/uploadVideo',
         		chunk_size: 5*1024*1024,
         		multi_selection: false,
 
@@ -107,7 +107,7 @@
             			console.log(res);
             			if(res && res.original_url){
             				var videoUrl=res.original_url;
-                            _this.$http.post('http://local.api.animesama.com:888/web/videoCreate',{
+                            _this.$http.post('/web/videoCreate',{
                             	v_type:1,
                             	videoUrl:videoUrl,
                             	title: _this.title,
@@ -119,9 +119,11 @@
                             }).then(function (response) {
                             	var code = response.code
                                 if(code > 0){
-                                	alert(response.message)
                                 	if(code == 2016){
+                                		alert('You need login')
                                 		_this.$store.commit('logout')
+                                	}else{
+                                		alert('failed')
                                 	}
                                 	return
                                 }else{
@@ -175,14 +177,16 @@
                 	formData.append('token',_this.$store.state.token);
                 	formData.append('nickname',_this.$store.state.nickname);
 
-                	_this.$http.post('http://local.api.animesama.com:888/web/upload',formData)
+                	_this.$http.post('/web/upload',formData)
                     .then(function (response) {
                     	console.log(response);
                     	var code = response.code
                         if(code > 0){
-                        	alert(response.message)
                         	if(code == 2016){
+                        		alert('You need login')
                         		_this.$store.commit('logout')
+                        	}else{
+                        		alert('failed')
                         	}
                         	return
                         }else{

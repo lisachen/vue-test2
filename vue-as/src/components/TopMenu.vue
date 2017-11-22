@@ -34,7 +34,8 @@
         methods:{
           edit(){
         	  if(this.token){
-        		  this.$router.push('/edit')
+        		  this.$router.push('/edit');
+              window.location.reload(); 
         	  }else{
         		  this.$store.commit('change')
         	  }

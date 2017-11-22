@@ -53,7 +53,7 @@
                 this.type=type;
             },
             getfeatruredTags: function(){
-              this.$http.get('http://local.api.animesama.com:888/tag/recommand').then(res=>{
+              this.$http.get('/tag/recommand').then(res=>{
                   res.data.forEach((item, index)=>{
                     this.featruredTags.push(item.name)
                   })

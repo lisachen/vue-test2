@@ -51,7 +51,7 @@
           },
           clickLogin(){
               var _this = this
-              this.$http.post('http://local.api.animesama.com:888/web/login', {
+              this.$http.post('/web/login', {
                   email: this.loginform.name,
                   password: this.loginform.password
               }).then(function (response) {
@@ -83,7 +83,7 @@
         	  },log).then(function(e){
         		  console.log(e)
         		  if(e.id>0){
-        			  _this.$http.post('http://local.api.animesama.com:888/web/loginSocia', {
+        			  _this.$http.post('/web/loginSocia', {
                           type: 2,
                           id: e.id
                       }).then(function (response) {
@@ -111,7 +111,7 @@
       			    FB.api('/me?fields=id,email', function(response) {
       			    	console.log(response)
       			    	if(response.id>0){
-      			    		_this.$http.post('http://local.api.animesama.com:888/web/loginSocia', {
+      			    		_this.$http.post('/web/loginSocia', {
       	                          type: 1,
       	                          id: response.id
       	                      }).then(function (response) {

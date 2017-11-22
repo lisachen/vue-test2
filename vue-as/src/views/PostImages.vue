@@ -87,14 +87,16 @@
                 	formData.append('token',_this.$store.state.token);
                 	formData.append('nickname',_this.$store.state.nickname);
 
-                	_this.$http.post('http://local.api.animesama.com:888/web/upload',formData)
+                	_this.$http.post('/web/upload',formData)
                     .then(function (response) {
                     	console.log(response);
                     	var code = response.code
                         if(code > 0){
-                        	alert(response.message)
                         	if(code == 2016){
+                        		alert('You need login')
                         		_this.$store.commit('logout')
+                        	}else{
+                        		alert('failed')
                         	}
                         	return
                         }else{
@@ -166,14 +168,16 @@
                 this.form_data.append('tags',this.tags);
                 this.form_data.append('token',this.$store.state.token);
                 this.form_data.append('nickname',this.$store.state.nickname);
-                this.$http.post('http://local.api.animesama.com:888/web/imageCreate',this.form_data)
+                this.$http.post('/web/imageCreate',this.form_data)
                 .then(function (response) {
                 	console.log(response);
                 	var code = response.code
                     if(code > 0){
-                    	alert(response.message)
                     	if(code == 2016){
+                    		alert('You need login')
                     		_this.$store.commit('logout')
+                    	}else{
+                    		alert('failed')
                     	}
                     	return
                     }else{
@@ -186,7 +190,7 @@
                 
             },
             /*getContentList(){
-              this.$http.get('http://local.api.animesama.com:888/web/feedDetail/'+this.id).then(res=>{
+              this.$http.get('/web/feedDetail/'+this.id).then(res=>{
                 this.articleData=res.data;
                 this.description=this.articleData.des;
                 this.coverUrl=this.articleData.cover_pic;

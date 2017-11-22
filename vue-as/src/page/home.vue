@@ -7,16 +7,7 @@
                 <div class="txt">
                   <h1>Anime Sama</h1>
                   <h2>The Best Pocket Community App</h2>
-                  <div class="download">
-                    <a href="#" class="btn-google"><i class="iconfont icon-google-play"></i><p class="tt-s">Download on</p><p class="tt-l">Google Play</p></a>
-                    <a href="#" class="btn-app"><i class="iconfont icon-ios"></i><p class="tt-s">Download on</p><p class="tt-l">App Store</p></a>
-                    <a href="#" class="btn-apk"><i class="iconfont icon-android"></i><p class="tt-s">Download</p><p class="tt-l">Apk v1.1.1</p></a>
-
-                  </div>
-                  <div class="ewm">
-                    <img src="../assets/img/ewm.jpg" alt="QR Code">
-                    <p>Scan to Get App</p>
-                  </div>
+                  <download />
                   <p class="note">Note: the app is only available on android 4.1 and upper versions.</p>
                 </div>
               </div>
@@ -62,7 +53,7 @@
 
 <script>
     import TopMenu from './../components/TopMenu'
-    //import './../assets/js/masonry.pkgd.min'
+    import Download from './../components/Download'
     export default {
         data(){
             return{
@@ -70,7 +61,7 @@
             }
         },
         components:{
-            TopMenu,
+            TopMenu,Download
         },
         mounted: function() {
             this.$nextTick(function() {

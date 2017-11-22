@@ -2,7 +2,7 @@
     <div class="main">
       <div class="title"><strong>My Posts</strong></div>
       <ul class="article-edit-list">
-        <li class="item" v-for="item,index in contentList" v-if="index>=(current-1)*display&&index<current*display">
+        <li class="item" v-for="item,index in contentList">
           <router-link :to="{name:'Detail',params:{id:item.feed_id}}" class="tt">{{item.title}}</router-link>
           <p class="time">{{item.publish_time}}</p>
           <p class="detail" v-html="item.des"></p>
@@ -14,26 +14,12 @@
           </div>
         </li>
       </ul>
-      <nav v-if="page > 1" class="pagination_nav">
-        <ul class="pagination">
-          <li><a href="javascript:;" v-show="current > 1" @click="current =1"> Home </a></li>
-          <li><a href="javascript:;" v-show="current > 1" @click="--current"> Previous </a></li>
-          <li v-for="n in page" :class="{ 'active': n  == current }"><a href="javascript:;" @click="current = n "> {{ n  }} </a></li>
-          <li><a href="javascript:;" v-show="current < page" @click="++current"> Next</a></li>
-          <li><a href="javascript:;" v-show="current < page" @click="current = page">End</a></li>
-        </ul>
-        <div></div>
-        <ul class="pagination pull-right">
-          <li><span> Total {{ total }} data </span></li>
-          <li><span>{{ display }} pieces of data per page </span></li>
-          <li><span> A total of {{ page }} pages </span></li>
-          <li><span> Current page {{ current }} </span></li>
-        </ul>
-      </nav>
+      <pagination  :xpage="page" :xdisplay="display" :xtotal="total" v-on:times="getIndex"></pagination>
     </div>
 </template>
 
 <script>
+  import Pagination from './../components/pagination'
 export default {
     data(){
       return{
@@ -42,77 +28,82 @@ export default {
         avatar:'',
         nickname:'',
         page:1,
-        display:5,
+        display:10,
         total:1,
-        current:1,
+        nowCurrent:1
       }
     },
     components:{
+      Pagination,
     },
     created: function() {
       this.$nextTick(function() {
-        this.getContentList();
+        this.getContentList(1);
       })
     },
-  /*  mounted:function(){
-      this.$nextTick(function() {
+    watch :{
+    	nowCurrent : function(v,oval){
+			this.getContentList(v);
+		}
+	},
 
-      })
-    },*/
-    updated: function(){
-      this.$nextTick(function () {
-        this.total = this.contentList.length;
-        this.page = Math.ceil(this.total / this.display);
-        console.log( this.page)
-        console.log(this.contentList.length)
-      })
+  methods: {
+    getContentList(page){
+      this.$http.post('/web/myPost',{
+    	  page: page,
+          token : this.$store.state.token,
+          nickname : this.$store.state.nickname
+      }).then(response=>{
+        console.log(response);
+        var code = response.code
+        if(code > 0){
+	        if(code == 2016){
+	          alert('You need login')
+	          this.$store.commit('logout')
+	        }
+	        return
+        }else{
+        	this.total=response.data.total
+          this.contentList=response.data.data
+          this.page = Math.ceil(this.total / this.display);
+        }
+      }).catch(function (error) {
+        console.log(error);
+      });
     },
-    methods: {
-      getContentList(){
-          var _this = this
-          this.$http.post('http://local.api.animesama.com:888/web/myPost',{
-              token : this.$store.state.token,
-              nickname : this.$store.state.nickname
-          }).then(function (response) {
-            console.log(response);
-            var code = response.code
-            if(code > 0){
-                alert(response.message)
-                if(code == 2016){
-                    _this.$store.commit('logout')
-                }
-                return
-            }else{
-                _this.contentList=response.data
-            }
-          }).catch(function (error) {
-              console.log(error);
-          });
-      },
-      del(id,index){
-          var _this = this
-          this.$http.post('http://local.api.animesama.com:888/web/delete',{
-              feed_id : id,
-              token : this.$store.state.token,
-              nickname : this.$store.state.nickname
-          }).then(function (response) {
-            console.log(response);
-            var code = response.code
-            if(code > 0){
-                alert(response.message)
-                if(code == 2016){
-                    _this.$store.commit('logout')
-                }
-                return
-            }else{
-                _this.contentList.splice(index,1)
-            }
+    del(id,index){
+      var _this = this
+      this.$http.post('/web/delete',{
+        feed_id : id,
+        token : this.$store.state.token,
+        nickname : this.$store.state.nickname
+      }).then(function (response) {
+        console.log(response);
+        var code = response.code
+        if(code > 0){
+          if(code == 2016){
+            alert('You need login')
+            _this.$store.commit('logout')
+          }else{
+            alert('failed')
+          }
+          return
+        }else{
+          _this.contentList.splice(index,1)
+        }
 
 
-          }).catch(function (error) {
-              console.log(error);
-          });
+      }).catch(function (error) {
+        console.log(error);
+      });
+    },
+      getIndex(data){
+        this.nowCurrent=data;
+        document.documentElement.scrollTop=0
+        document.body.scrollTop=0
       }
   }
-}  
+}
 </script>
+
+
