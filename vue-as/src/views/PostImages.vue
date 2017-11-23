@@ -28,18 +28,19 @@
         </div>
 
         <div class="form-group">
-          <label>Tages</label>
+          <label>Tags</label>
           <input type="text" class="form-control input-tag" id="tags" placeholder="Enter separated tages">
           <p class="tags">Featured Tags  <span v-for="tag in fdTags" @click="addTage(tag)">{{tag}}</span></p>
         </div>
         <div class="btn-group">
             <a href="javascript:;"class="btn btn-l btn-green" @click="editPost">Post</a>
         </div>
+        <Loading :loading="isLoading"/>
     </div>
 </template>
 
 <script>
-    
+    import Loading from './../components/Loading'
     export default{	
         props:['fdTags'], 	
         data(){
@@ -52,9 +53,12 @@
                 articleData:[],
                 //id:this.$route.params.id,
                 form_data: new FormData(),
-                count:0
-
+                count:0,
+                isLoading:false
             }
+        },
+        components:{
+            Loading
         },
         mounted: function() {
             this.$nextTick(function() {
@@ -140,71 +144,59 @@
                 this.count --;
             },      
             editPost(){
-                let tags=$('.input-tag').val();
                 let _this = this;
-                if(typeof tags!=='undefined'){
-                    this.tags=$('.input-tag').val().split(",");
-                }else{
-                	this.tags=[]
+                let desLen=this.description.length;
+                if(desLen<5 || desLen>300){
+                    alert('Description:5-300 characters.');
+                    return;
                 }
+
                 if(this.coverUrl==''){
         			alert('cover is require!');
         			return;
         		}
-                if(this.description==''){
-        			alert('description is require!');
-        			return;
-        		}
-                if(this.tags==''){
-        			alert('tags is require!');
-        			return;
-        		} 
+
                 if(this.count < 4){
-                	alert('need 4 images!');
-        			return;
+                    alert('Please upload 4 or more pictures.');
+                    return;
                 }
+
+                let tags=$('.input-tag').val();
+                if(tags==''){
+                    alert('Please write tags!');
+                    return false;
+                }else{
+                    this.tags=$('.input-tag').val().split(",");
+                }
+
+                this.isLoading=true;
                 this.form_data.append('des',this.description);
                 this.form_data.append('cover',this.coverUrl);
                 this.form_data.append('tags',this.tags);
                 this.form_data.append('token',this.$store.state.token);
                 this.form_data.append('nickname',this.$store.state.nickname);
                 this.$http.post('/web/imageCreate',this.form_data)
-                .then(function (response) {
+                .then(response=>{
                 	console.log(response);
+                    this.isLoading=false;
                 	var code = response.code
                     if(code > 0){
                     	if(code == 2016){
                     		alert('You need login')
-                    		_this.$store.commit('logout')
+                    		this.$store.commit('logout')
                     	}else{
                     		alert('failed')
                     	}
                     	return
                     }else{
                     	alert('success')
-                    	_this.$router.push('/')
+                    	this.$router.push('/')
                    	}
-                }).catch(function (error) {
+                }).catch(error=>{
                     console.log(error);
                 });
                 
             },
-            /*getContentList(){
-              this.$http.get('/web/feedDetail/'+this.id).then(res=>{
-                this.articleData=res.data;
-                this.description=this.articleData.des;
-                this.coverUrl=this.articleData.cover_pic;
-                this.imagesUrl=this.articleData.images;
-                this.articleData.tags.forEach((item, index)=>{
-                    this.tags.push(item.name);
-                })
-                $('.input-tag').importTags(this.tags.toString());
-
-              })
-            },
-            saveEdit(){
-                
-            }*/
         }
     }
 </script>

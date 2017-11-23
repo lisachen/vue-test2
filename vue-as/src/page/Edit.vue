@@ -11,11 +11,11 @@
         <div class="form-group">
           <label for="type">Type</label>
           <select class="form-control" @change="jumpType(type)" v-model="type" id="selectType">
-            <option>article</option>
+            <option>blog</option>
+            <option>drawing</option>
             <option>images</option>
             <option>videos</option>
           </select>
-    
         </div>
         <router-view @v-type="changeType" :fdTags='featruredTags'></router-view>
       </fieldset>
@@ -23,6 +23,7 @@
     </div>
   </section>
 </div>
+
 </template>
 
 <script>
@@ -43,11 +44,19 @@
             this.$nextTick(function() {
               this.getfeatruredTags();
               console.log(this.featruredTags);
+              if(this.$route.params.category=='1'){
+                  this.type='drawing';
+              }else if(this.$route.params.category=='3'){
+                  this.type='blog';
+              }
             });
         },
         methods: { 
             jumpType(name){
-                this.$router.push({path:'/edit/'+name});
+              if(name=='blog'||name=='drawing'){
+                name='article/'+name;
+              }
+              this.$router.push({path:'/edit/'+name});
             },
             changeType(type){
                 this.type=type;

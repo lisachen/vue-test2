@@ -28,19 +28,21 @@
         </div>
         <div class="form-group">
             <label>Description</label>
-            <textarea class="form-control" v-model="description" placeholder="Required 5-300 characters."></textarea>
+            <textarea class="form-control" v-model="description" placeholder="Optional,5-200 characters."></textarea>
         </div>
         <div class="form-group">
-            <label>Tages</label>
+            <label>Tags</label>
             <input type="text" class="form-control input-tag" name="tags" id="tags" placeholder="Enter separated tages">
             <p class="tags">Featured Tags  <span v-for="tag in fdTags" @click="addTage(tag)">{{tag}}</span></p>
         </div>
         <div class="btn-group">
         <a href="javascript:;"><div class="btn btn-l btn-green" id="post-submit">Post</div></a></div>
+        <Loading :loading="isLoading"/>
     </div>
 </template>
 
 <script>
+    import Loading from './../components/Loading'
     export default{
         props:['fdTags'],
         data(){
@@ -54,16 +56,26 @@
                 description:'',
                 featruredTags:['mange','review','light novel'] ,
                 tags:[],
+                isLoading:false
             }
+        },
+        components:{
+            Loading
         },
         mounted: function() {	
         	//视频上传
         	var _this = this;
+        	var url = baseUrl+'/web/uploadVideo';
         	var uploader = new plupload.Uploader({ //实例化一个plupload上传对象
         		browse_button : 'browse',
-        		url : '/web/uploadVideo',
+        		url : url,
         		chunk_size: 5*1024*1024,
         		multi_selection: false,
+        		headers : {
+        			'version': '2.1.0',
+        			'platform': 'IOS',
+        			'auth': 'f5dacee17a9715dddd3f6c946b0b1031'
+        		}
 
         	});
         	uploader.init(); //初始化
@@ -78,22 +90,28 @@
         	});
         	//点提交按钮才上传
         	$(document).on('click', '#post-submit',function(){
-        		_this.editPost();
         		//标题不能为空
-        		if(_this.title==''){
-        			alert('title is require!');
-        			return;
-        		}
+                let tLen=_this.title.length;
+                if(tLen<5 || tLen>120){
+                    alert('Title:5-120 characters.');
+                    return;
+                }
+
         		//封面不能为空
         		if(_this.coverUrl==''){
         			alert('cover is require!');
         			return;
         		}
         		//tag不能为空
-        		if(_this.tags==''){
-        			alert('tag is require!');
-        			return;
-        		}
+        		let tags=$('.input-tag').val();
+                if(tags==''){
+                    alert('Please write tags!');
+                    return false;
+                }else{
+                    this.tags=$('.input-tag').val().split(",");
+                }
+
+        		_this.isLoading=true;
         		if(_this.category == 1){
         			//上传视频
         			if(_this.videoUrl=='mpg,m4v,mp4,flv,3gp,mov,avi,rmvb,mkv,wmv, no mo than 100m'){
@@ -101,7 +119,7 @@
             			return;
             		}
         			var res = false;
-            		var objThis = this;
+            		var objThis = this; 
             		uploader.bind('FileUploaded', function(uploader,file,responseObject) {
             			res = JSON.parse(responseObject.response);
             			console.log(res);
@@ -117,7 +135,8 @@
                                 nickname: _this.$store.state.nickname,
                                 token: _this.$store.state.token
                             }).then(function (response) {
-                            	var code = response.code
+                            	var code = response.code;
+                                _this.isLoading=false;
                                 if(code > 0){
                                 	if(code == 2016){
                                 		alert('You need login')
@@ -135,7 +154,9 @@
                                 console.log(error);
                             });
             			}else{
+            				uploader.files.splice(0,1);
             				alert('upload video failed');
+            				_this.videoUrl='mpg,m4v,mp4,flv,3gp,mov,avi,rmvb,mkv,wmv, no mo than 100m';
             				return;
             			}
             			
@@ -147,6 +168,34 @@
             			alert('video url is require!');
             			return;
             		}
+        			_this.$http.post('/web/videoCreate',{
+                    	v_type:2,
+                    	videoUrl:_this.YouTubeUrl,
+                    	title: _this.title,
+                        cover:_this.coverUrl,
+                        tags:_this.tags,
+                        des: _this.description,
+                        nickname: _this.$store.state.nickname,
+                        token: _this.$store.state.token
+                    }).then(function (response) {
+                    	var code = response.code
+                    	_this.isLoading=false;
+                        if(code > 0){
+                        	if(code == 2016){
+                        		alert('You need login')
+                        		_this.$store.commit('logout')
+                        	}else{
+                        		alert('failed')
+                        	}
+                        	return
+                        }else{
+                        	alert('success')
+                        	_this.$router.push('/')
+                       	}
+                    	
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
         		}
 
         		
@@ -197,15 +246,6 @@
                     });
             	})
             },
-            editPost(){
-                let tags=$('.input-tag').val();
-                if(typeof tags!=='undefined'){
-                    this.tags=$('.input-tag').val().split(",");
-                }else{
-                	this.tags = [];
-                }
-                
-            }
         }
     }
 </script>

@@ -6,10 +6,10 @@
           <router-link :to="{name:'Detail',params:{id:item.feed_id}}" class="tt">{{item.title}}</router-link>
           <p class="time">{{item.publish_time}}</p>
           <p class="detail" v-html="item.des"></p>
-          <router-link :to="{name:'Detail',params:{id:item.feed_id}}" class="tt"><img :src="item.cover_pic" ></router-link>
+          <router-link :to="{name:'Detail',params:{id:item.feed_id}}" class="tt"><img v-lazy="item.cover_pic" :alt="item.title"></router-link>
           <p class="tags"><span v-for="tags in item.tags">{{tags.name}}</span></p>
           <div class="edit-btns">
-            <router-link v-if="item.feed_type==0" :to="{name:'Reedit'+item.feed_type,params:{id:item.feed_id}}" class="mr10"><i class="iconfont icon-edit"></i><em>Edit</em></router-link>
+            <router-link v-if="item.feed_type==0" :to="{name:'Reedit0',params:{category:item.category,id:item.feed_id}}" class="mr10"><i class="iconfont icon-edit"></i><em>Edit</em></router-link>
             <a @click="del(item.feed_id,index)"><i class="iconfont icon-shanchu"></i><em>Delete</em></a>
           </div>
         </li>
@@ -72,30 +72,36 @@ export default {
       });
     },
     del(id,index){
-      var _this = this
-      this.$http.post('/web/delete',{
-        feed_id : id,
-        token : this.$store.state.token,
-        nickname : this.$store.state.nickname
-      }).then(function (response) {
-        console.log(response);
-        var code = response.code
-        if(code > 0){
-          if(code == 2016){
-            alert('You need login')
-            _this.$store.commit('logout')
-          }else{
-            alert('failed')
-          }
-          return
+        var msg = "Delete this post?\n\n";
+        if (confirm(msg)==true){
+          var _this = this
+          this.$http.post('/web/delete',{
+            feed_id : id,
+            token : this.$store.state.token,
+            nickname : this.$store.state.nickname
+          }).then(function (response) {
+            console.log(response);
+            var code = response.code
+            if(code > 0){
+              if(code == 2016){
+                alert('You need login')
+                _this.$store.commit('logout')
+              }else{
+                alert('failed')
+              }
+              return
+            }else{
+              _this.contentList.splice(index,1)
+            }
+
+
+          }).catch(function (error) {
+            console.log(error);
+          });
+
         }else{
-          _this.contentList.splice(index,1)
+          return false;
         }
-
-
-      }).catch(function (error) {
-        console.log(error);
-      });
     },
       getIndex(data){
         this.nowCurrent=data;

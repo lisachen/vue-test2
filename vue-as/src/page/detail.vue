@@ -6,14 +6,14 @@
     <section class="content">
       <div class="inner">
           <div class="article">
-            <h2 class="tt">{{itemList.title}}</h2>
+            <h2 class="tt">{{itemList.feed_type == 2 ? itemList.des :itemList.title}}</h2>
             <p class="mate"><span class="by">By {{itemList.nickname}}</span><span class="time">{{itemList.publish_time}}</span></p>
            <!-- <div class="detail" v-html="itemList.content_text" v-if=""></div>-->
             <content-txt :parentMsg="itemList.content_text" v-if="notVideo==0"></content-txt>
             <content-vdo :parentUrl="itemList.url" :parentPost="itemList.cover_pic" v-else-if="notVideo==1"></content-vdo>
             <content-youtube :parentUrl="itemList.url" :parentPost="itemList.cover_pic" v-else-if="notVideo==2"></content-youtube>
             <content-image :parentImg="itemList.images" v-else-if="notVideo==3"></content-image>
-            <p class="tags mb20">Tag<span v-for="list,index in itemList.tags">{{list.name}}</span></p>
+            <p class="tags mb20"><i>Tag</i> <span v-for="list,index in itemList.tags">{{list.name}}</span></p>
             <p class="other mb20"><a href="javascript:;">Download App to get more fun!</a></p>
             <p class="other"><a href="javascript:;" @click="gorand">keep viewing other posts</a></p>
           </div>

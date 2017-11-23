@@ -83,7 +83,7 @@ export default new Router({
     },
     {
       path: '/edit',
-      redirect: "/edit/article",
+      redirect: "/edit/article/blog",
       name: 'Edit',
       components:{
         default:Edit,
@@ -93,17 +93,17 @@ export default new Router({
       },
       children:[
         {
-            path:'article',
+            path:'article/:type',
             name:'PostArticle',
             component:PostArticle
         },
         {
-          path: 'article/:id',
+          path: 'article/:category/:id',
           name: 'Reedit0',
           component: PostArticle
         },
         {
-          path: 'draft/:draftId',
+          path: 'draft/:category/:draftId',
           name: 'Draft0',
           component: PostArticle
         },

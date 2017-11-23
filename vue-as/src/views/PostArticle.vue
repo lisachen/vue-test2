@@ -2,50 +2,51 @@
     <div class="post-article">
         <div class="form-group">
           <label>Title</label>
-          <input type="text" class="form-control" v-model="title">
+          <input type="text" class="form-control" v-model="title" placeholder="Optional">
         </div>
-        <div class="form-group">
-          <label>Category</label>
-          <label class="label-radio mr20" @click="category=3"><input type="radio" name="cate" checked>Blog</label>
-          <label class="label-radio" @click="category=1"><input type="radio" name="cate">Drawing</label>
-        </div>
+
         <div class="form-group form-group-editor">
             <p><iframe id="editor"></iframe></p>
             <input type="file" id="upload_img" class="btn-file"  accept="image/png,image/jpeg,image/gif,image/jpg"/>
-            <a  class="btn-upload">Upload Local Img</a>
+            <a  class="btn-upload">Upload</a>
         </div>
         <div class="form-group">
-          <label>Tages</label>
+          <label>Tags</label>
           <input type="text" class="form-control input-tag" name="tags" id="tags" placeholder="Enter separated tages" v-model="tags" >
           <p class="tags">Featured Tags  <span v-for="tag in fdTags" @click="addTage(tag)">{{tag}}</span></p>
         </div>
-        <div class="btn-group"><a href="javascript:;" class="btn btn-l btn-org mr20" title="Save as a draft" @click="saveDraft">Save</a>
+        <div class="btn-group"><a href="javascript:;" class="btn btn-l btn-org mr20" title="Save as a draft" @click="saveDraft">Save to Draft</a>
         <a v-if="typeof id == 'undefined'" href="javascript:;"class="btn btn-l btn-green" @click="editPost">Post</a>
         <a v-else href="javascript:;" class="btn btn-l btn-green" @click="saveEdit">Save</a>
         </div>
+        <Loading :loading="isLoading"/>
     </div>
-    
 </template>
 
 <script>
     import {mapState} from 'vuex'
+    import Loading from './../components/Loading'
     export default{
         props:['fdTags'],
         data(){
             return{
-                type:'article',
+                type:this.$route.params.type ,
                 title:'',
                 content:'',
-                category:'3',
+                category:this.$route.params.category,
                 tags:[],
                 articleData:[],
                 id:this.$route.params.id,
-                draftId:this.$route.params.draftId
+                draftId:this.$route.params.draftId,
+                isLoading:false
             }
+        },
+        components:{
+            Loading
         },
         mounted: function() {
             this.$nextTick(()=> {
-                this.postType();
+                this.emit();
                 this.editorContent();
                 $('.input-tag').tagsInput();
                 if(typeof this.id !== "undefined"){
@@ -59,7 +60,7 @@
             })
         },
         methods: { 
-            postType: function(){
+            emit: function(){
                 this.$emit('v-type',this.type);
             },
             addTage(tag){
@@ -69,15 +70,16 @@
                    $('.input-tag').addTag(tag); 
                 } 
             },
-
-            post(url,feed_id,draft_id){
-            	var tags=$('.input-tag').val();
-
-                if(typeof tags!=='undefined'){
-                    this.tags=$('.input-tag').val().split(",");
-                }else{
-                    this.tags=[]
-                }
+            post(url,feed_id,draft_id){	
+				let cate = 1;
+				if(this.category == 3){
+					cate = 3;
+				}else{
+					if(this.$route.params.type == 'blog'){
+						cate = 3;
+					}
+				}
+                
                 this.content=$('#editor').contents().find('body').html();
                 
                	//内容不能为空
@@ -86,34 +88,36 @@
            			return false;
            		}
                 
-            	var _this = this;
+                this.isLoading=true;
+
             	this.$http.post(url, {
             		feed_id: feed_id,
             		id:draft_id,
                     title: this.title,
                     content:this.content,
                     tags:this.tags,
-                    category: this.category,
+                    category: cate,
                     nickname: this.$store.state.nickname,
                     token: this.$store.state.token
                 })
-                .then(function (response) {
+                .then(response=> {
                     console.log(response);
+                    this.isLoading=false;
                     var code = response.code
                     if(code > 0){
                     	if(code == 2016){
                     		alert('You need login')
-                    		_this.$store.commit('logout')
+                    		this.$store.commit('logout')
                     	}else{
                     		alert('failed')
                     	}
                     	return
                     }else{
                     	alert('success')
-                    	_this.$router.push('/')
+                    	this.$router.push('/')
                    	}
                 })
-                .catch(function (error) {
+                .catch(error=>{
                     console.log(error);
                 });
             },   
@@ -126,7 +130,7 @@
                 $d.contentEditable = true;
                 $d.open();
                 $d.close();
-
+                $("body",$d).append("Text(required)");
                 $("#upload_img").change(function () {
                 	var formData = new FormData();
                 	var file = this.files[0];
@@ -187,20 +191,32 @@
                 });                
             },
             editPost(){  //发帖  带上草稿id  发布成功后删除草稿
-           		if(this.tags==''){
-           			alert('tag is require!');
-           			return false;
-           		}
+            	let tags=$('.input-tag').val();
+            	if(tags==''){
+                    alert('Please write tags!');
+                    return false;
+                }else{
+                    this.tags=$('.input-tag').val().split(",");
+                }
            		this.post('/web/feedCreate',0,this.draftId);
             },
             saveEdit(){   //修改帖子  带上草稿id  修改成功后删除草稿
-            	if(this.tags==''){
-           			alert('tag is require!');
-           			return false;
-           		}
+            	let tags=$('.input-tag').val();
+            	if(tags==''){
+                    alert('Please write tags!');
+                    return false;
+                }else{
+                    this.tags=$('.input-tag').val().split(",");
+                }
                 this.post('/web/feedEdit',this.id,this.draftId);
             },
             saveDraft(){  //保存草稿
+            	let tags=$('.input-tag').val();
+            	if(tags==''){
+                    this.tags = '';
+                }else{
+                    this.tags=$('.input-tag').val().split(",");
+                }
             	this.post('/web/draftCreate',this.id,this.draftId);
             },
             

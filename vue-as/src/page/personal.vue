@@ -13,7 +13,7 @@
               <!--用户名-->
               <p class="name">{{info.nickname}}</p>
               <!--粉丝-->
-              <p class="mate"><span class="mr10">{{ info.myfollowing }} Fllowers</span><span>{{ info.myfollowers }} Fllowers</span></p>
+              <div class="mate"><p>{{ info.myfollowing }} Fllowering</p><p>{{ info.myfollowers }} Fllowers</p></div>
               <p class="intr">{{ info.intro }}</p>
             </div>
             <div class="btns-my">

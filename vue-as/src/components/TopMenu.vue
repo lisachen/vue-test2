@@ -34,8 +34,10 @@
         methods:{
           edit(){
         	  if(this.token){
+	              if(this.$route.params.category>0){
+	                this.$router.go(0);
+	              }
         		  this.$router.push('/edit');
-              window.location.reload(); 
         	  }else{
         		  this.$store.commit('change')
         	  }

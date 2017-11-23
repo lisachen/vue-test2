@@ -3,14 +3,16 @@
       <div class="title"><strong>My Drafts</strong></div>
       <ul class="article-edit-list">
         <li class="item" v-for="item,index in contentList">
-          <router-link :to="{name:'Detail',params:{id:item.draft_id}}" class="tt">{{item.title}}</router-link>
+            <router-link v-if="item.feed_id>0" :to="{name:'Reedit0',params:{category:item.category,id:item.feed_id}}" class="tt">{{item.title}}</router-link>
+            <router-link v-else :to="{name:'Draft0',params:{category:item.category,draftId:item.draft_id}}"  class="tt">{{item.title}}</router-link>
           <p class="time">{{item.publish_time}}</p>
           <p class="detail" v-html="item.des"></p>
-          <router-link :to="{name:'Detail',params:{id:item.draft_id}}" class="tt"><img :src="item.cover_pic" ></router-link>
+          <router-link v-if="item.feed_id>0" :to="{name:'Reedit0',params:{category:item.category,id:item.feed_id}}" class="tt"><img v-lazy="item.cover_pic" :alt="item.title"></router-link>
+          <router-link v-else :to="{name:'Draft0',params:{category:item.category,draftId:item.draft_id}}"  class="tt"><img v-lazy="item.cover_pic" :alt="item.title"></router-link>
           <p class="tags"><span v-for="tags in item.tags">{{tags.name}}</span></p>
           <div class="edit-btns">
-            <router-link v-if="item.feed_id>0" :to="{name:'Reedit0',params:{id:item.feed_id}}" class="mr10"><i class="iconfont icon-edit"></i><em>Edit</em></router-link>
-            <router-link v-else :to="{name:'Draft0',params:{draftId:item.draft_id}}" class="mr10"><i class="iconfont icon-edit"></i><em>Edit</em></router-link>
+            <router-link v-if="item.feed_id>0" :to="{name:'Reedit0',params:{category:item.category,id:item.feed_id}}" class="mr10"><i class="iconfont icon-edit"></i><em>Edit</em></router-link>
+            <router-link v-else :to="{name:'Draft0',params:{category:item.category,draftId:item.draft_id}}" class="mr10"><i class="iconfont icon-edit"></i><em>Edit</em></router-link>
             <a @click="del(item.draft_id,index)"><i class="iconfont icon-shanchu"></i><em>Delete</em></a>
           </div>
         </li>
@@ -72,6 +74,8 @@ export default {
           });
       },
       del(id,index){
+        var msg = "Delete this draft?\n\n";
+        if (confirm(msg)==true){
           var _this = this
           this.$http.post('/web/draftDelete',{
               id : id,
@@ -96,6 +100,9 @@ export default {
           }).catch(function (error) {
               console.log(error);
           });
+        }else{
+          return false;
+        }
       },
       getIndex(data){
         this.nowCurrent=data;
