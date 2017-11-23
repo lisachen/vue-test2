@@ -10,16 +10,16 @@
               <span class="sortby">Sort by:</span>
               <a href="javascript:void(0)" class="default cur">Default</a>
               <a href="javascript:void(0)" class="price">Price <svg class="icon icon-arrow-short"><use xlink:href="#icon-arrow-short"></use></svg></a>
-              <a href="javascript:void(0)" class="filterby stopPop">Filter by</a>
+              <a @click="showFilterby"  href="javascript:void(0)" class="filterby stopPop">Filter by</a>
             </div>
             <div class="accessory-result">
               <!-- filter -->
-              <div class="filter stopPop" id="filter">
+              <div class="filter stopPop" id="filter" :class="{'filterby-show':filterbyShow}">
                 <dl class="filter-price">
                   <dt>Price:</dt>
-                  <dd><a href="javascript:void(0)">All</a></dd>
-                  <dd>
-                    <a href="javascript:void(0)">0 - 100</a>
+                  <dd><a :class="{'cur':filterFlag=='All'}" @click="startPriceFilter('All')" href="javascript:void(0)">All</a></dd>
+                  <dd v-for="(price,index) in priceFilter">
+                    <a :class="{'cur':filterFlag==index}" @click="startPriceFilter(index)" href="javascript:void(0)">{{price.startPrice}} - {{price.endPrice}}</a>
                   </dd>
                 </dl>
               </div>
@@ -46,6 +46,7 @@
             </div>
           </div>
         </div>
+        <div class="md-overlay" v-show="overLayFlag" @click="closeFilterby"></div>
         <footer-component/>
     </div>
 </template>
@@ -57,7 +58,24 @@
     export default{
         data(){
             return{
-                goodsList:[]
+                goodsList:[],
+                priceFilter:[
+                    {
+                        startPrice:'0.00',
+                        endPrice:'500.00'
+                    },
+                    {
+                        startPrice:'500.00',
+                        endPrice:'1000.00'
+                    },
+                    {
+                        startPrice:'1000.00',
+                        endPrice:'2000.00'
+                    },
+                ],
+                filterFlag:'All',
+                filterbyShow:false,
+                overLayFlag:false,
             }
         },
         components:{
@@ -75,6 +93,18 @@
                 axios.get('/goods').then(res=>{
                     this.goodsList=res.data.result;
                 })
+            },
+            showFilterby(){
+                this.filterbyShow=true;
+                this.overLayFlag=true;
+            },
+            startPriceFilter(index){
+                this.filterFlag=index;
+                this.closeFilterby();
+            },
+            closeFilterby(){
+                this.filterbyShow=false;
+                this.overLayFlag=false;
             }
         },
     }
