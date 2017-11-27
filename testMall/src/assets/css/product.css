@@ -404,7 +404,10 @@
   -ms-flex: 1;
   flex: 1;
 }
-
+.accessory-result .accessory-list .loading-more{
+    line-height: 100px;
+    text-align: center;
+}
 .filter-nav {
   height: 55px;
   line-height: 55px;

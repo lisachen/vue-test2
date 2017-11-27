@@ -47,6 +47,10 @@
                                     </div>
                                 </li>
                             </ul>
+                            <div class="loading-more" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy"
+                                 infinite-scroll-distance="10" v-show="loading">
+                                加载中...
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -66,8 +70,12 @@
         data() {
             return {
                 goodsList: [],
-                sortFlag:false,
-                SortBy:'0',
+                sortFlag: false,
+                SortBy: '0',
+                page: 1,
+                pageSize: 8,
+                busy: true,
+                loading:false,
                 priceFilter: [
                     {
                         startPrice: '0.00',
@@ -94,28 +102,50 @@
         },
         mounted: function () {
             this.$nextTick(function () {
-                this.getGoodsList();
+                this.getGoodsList(false);
             })
         },
         methods: {
-            getGoodsList() {
-                let param={
-                    page:1,
-                    pageSize:8,
-                    sort:this.sortFlag?1:-1
+            getGoodsList(flag) {
+                this.loading=true;
+                let param = {
+                    page: this.page,
+                    pageSize: this.pageSize,
+                    sort: this.sortFlag ? 1 : -1
                 }
-                axios.get('/goods',{
-                    params:param
+                axios.get('/goods', {
+                    params: param
                 }).then(response => {
                     let res = response.data;
+                    this.loading=false;
                     if (res.status == '0') {
-                        this.goodsList = res.result.list;
+                        if (flag) {//分页是否累加
+                            this.goodsList = this.goodsList.concat(res.result.list);//concat() 方法用于连接两个或多个数组。
+                            if (res.result.count < this.pageSize) {
+                                this.busy = true;
+                            } else {
+                                this.busy = false;
+                            }
+                        } else {
+                            this.goodsList = res.result.list;
+                            this.busy = false;
+                        }
+                    } else {
+                        this.goodsList = [];
                     }
                 })
             },
-            sortPrice(){
-                this.sortFlag= !this.sortFlag;
-                this.SortBy=1;
+            loadMore(){
+                this.busy = true;
+                setTimeout(() => {
+                    this.page++;
+                    this.getGoodsList(true);
+                }, 1500);
+            },
+            sortPrice() {
+                this.sortFlag = !this.sortFlag;
+                this.page = 1;
+                this.SortBy = 1;
                 this.getGoodsList();
             },
             showFilterby() {
