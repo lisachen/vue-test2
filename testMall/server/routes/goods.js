@@ -7,36 +7,44 @@ var Goods = require('../models/goods');
 mongoose.connect('mongodb://127.0.0.1:27017/testMall'); //链接数据库
 
 mongoose.connection.on("connected", function () {
-  console.log('链接成功');
+    console.log('链接成功');
 })
 
 mongoose.connection.on("error", function () {
-  console.log('链接失败');
+    console.log('链接失败');
 })
 
 mongoose.connection.on("disconnected", function () {
-  console.log('链接断开');
+    console.log('链接断开');
 })
 
 router.get('/', function (req, res, next) {
-  Goods.find({}, function (err, doc) {
-    if (err) {
-      res.json({
-        status: '1',
-        msg: err.message
-      });
-    } else {
-      res.json({
-        status: '0',
-        msg: '',
-        result: {
-          count: doc.length,
-          list: doc
+    //goods?page=1&pageSize=5&sort=1
+    let page = parseInt(req.param('page'));
+    let pageSize = parseInt(req.param('pageSize'));
+    let sort = req.param('sort');//排序方式
+    let skip = (page - 1) * pageSize;
+    let params = {};
+    let goodsModel = Goods.find(params).skip(skip).limit(pageSize);
+    goodsModel.sort({'salePrice': sort});
+    goodsModel.exec(function (err, doc) {
+        if (err) {
+            res.json({
+                status: '1',
+                msg: err.message
+            });
+        } else {
+            res.json({
+                status: '0',
+                msg: '',
+                result: {
+                    count: doc.length,
+                    list: doc
+                }
+            })
         }
-      })
-    }
 
-  })
+    })
 })
 
 module.exports = router; //输出

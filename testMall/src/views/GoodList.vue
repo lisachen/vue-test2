@@ -8,8 +8,8 @@
             <div class="container">
                 <div class="filter-nav">
                     <span class="sortby">Sort by:</span>
-                    <a href="javascript:void(0)" class="default cur">Default</a>
-                    <a href="javascript:void(0)" class="price">Price
+                    <a href="javascript:void(0)" class="default" :class="{'cur':SortBy=='0'}">Default</a>
+                    <a href="javascript:void(0)" class="price" :class="{'cur':SortBy!=='0'}" @click="sortPrice">Price
                         <svg class="icon icon-arrow-short">
                             <use xlink:href="#icon-arrow-short"></use>
                         </svg>
@@ -40,7 +40,7 @@
                                     </div>
                                     <div class="main">
                                         <div class="name">{{item.productName}}</div>
-                                        <div class="price">{{item.productPrice}}</div>
+                                        <div class="price">{{item.salePrice}}</div>
                                         <div class="btn-area">
                                             <a href="javascript:;" class="btn btn--m">加入购物车</a>
                                         </div>
@@ -66,6 +66,8 @@
         data() {
             return {
                 goodsList: [],
+                sortFlag:false,
+                SortBy:'0',
                 priceFilter: [
                     {
                         startPrice: '0.00',
@@ -97,12 +99,24 @@
         },
         methods: {
             getGoodsList() {
-                axios.get('/goods').then(response => {
+                let param={
+                    page:1,
+                    pageSize:8,
+                    sort:this.sortFlag?1:-1
+                }
+                axios.get('/goods',{
+                    params:param
+                }).then(response => {
                     let res = response.data;
                     if (res.status == '0') {
                         this.goodsList = res.result.list;
                     }
                 })
+            },
+            sortPrice(){
+                this.sortFlag= !this.sortFlag;
+                this.SortBy=1;
+                this.getGoodsList();
             },
             showFilterby() {
                 this.filterbyShow = true;
