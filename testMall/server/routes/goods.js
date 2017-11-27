@@ -25,6 +25,22 @@ router.get('/', function (req, res, next) {
     let sort = req.param('sort');//排序方式
     let skip = (page - 1) * pageSize;
     let params = {};
+    let priceLevel=req.param('priceLevel');
+    let gtPrice='',ltePrice='';
+    if(priceLevel!='All'){
+        switch (priceLevel){
+            case '0':gtPrice=0;ltePrice=500;break;
+            case '1':gtPrice=500;ltePrice=1000;break;
+            case '2':gtPrice=1000;ltePrice=2000;break;
+        }
+        params={
+            salePrice:{
+                $gt:gtPrice,
+                $lte:ltePrice
+            }
+        }
+    }
+
     let goodsModel = Goods.find(params).skip(skip).limit(pageSize);
     goodsModel.sort({'salePrice': sort});
     goodsModel.exec(function (err, doc) {

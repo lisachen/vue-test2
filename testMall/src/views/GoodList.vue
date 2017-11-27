@@ -21,10 +21,10 @@
                     <div class="filter stopPop" id="filter" :class="{'filterby-show':filterbyShow}">
                         <dl class="filter-price">
                             <dt>Price:</dt>
-                            <dd><a :class="{'cur':filterFlag=='All'}" @click="startPriceFilter('All')"
+                            <dd><a :class="{'cur':filterFlag=='All'}" @click="priceLevel('All')"
                                    href="javascript:void(0)">All</a></dd>
                             <dd v-for="(price,index) in priceFilter">
-                                <a :class="{'cur':filterFlag==index}" @click="startPriceFilter(index)"
+                                <a :class="{'cur':filterFlag==index}" @click="priceLevel(index)"
                                    href="javascript:void(0)">{{price.startPrice}} - {{price.endPrice}}</a>
                             </dd>
                         </dl>
@@ -111,7 +111,8 @@
                 let param = {
                     page: this.page,
                     pageSize: this.pageSize,
-                    sort: this.sortFlag ? 1 : -1
+                    sort: this.sortFlag ? 1 : -1,
+                    priceLevel:this.filterFlag
                 }
                 axios.get('/goods', {
                     params: param
@@ -140,6 +141,7 @@
                 setTimeout(() => {
                     this.page++;
                     this.getGoodsList(true);
+                    this.busy = false;
                 }, 1500);
             },
             sortPrice() {
@@ -152,9 +154,11 @@
                 this.filterbyShow = true;
                 this.overLayFlag = true;
             },
-            startPriceFilter(index) {
+            priceLevel(index) {
+                this.page=1;
                 this.filterFlag = index;
                 this.closeFilterby();
+                this.getGoodsList();
             },
             closeFilterby() {
                 this.filterbyShow = false;
