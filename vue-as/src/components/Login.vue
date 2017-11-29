@@ -14,7 +14,7 @@
           </div>
           <div class="btn-group">
             <button class="btn btn-l btn-green" id="login-sub" @click="clickLogin">Login</button>
-            <a href="javascript:;" class="forgot-pwd" id="forgot">Forgot Password?</a>
+            <a href="javascript:;" class="forgot-pwd" id="forgot" @click="forgotPswd">Forgot Password?</a>
           </div>
           <div>
             <a href="javascript:;" class="btn-fb" @click="loginFackbook" style="display:inline-block"><img style="width:173px;" src="../assets/img/facebook_login.png" alt="FB"></a>
@@ -28,7 +28,20 @@
       </div>
       <a class="close" @click="close">&times;</a>
     </div>
-    <div class="mask" v-show="block"></div>
+    <div class="modal modal-retrieve" v-if="retrievePwd">
+        <fieldset>
+            <legend>Retrieve Password</legend>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" class="form-control" v-model="email">
+            </div>
+            <div class="btn-group">
+                <button id="forgot-email" class="btn btn-l btn-org" @click="sendMail">Submit</button>
+            </div>
+        </fieldset>
+        <a class="close" @click="retrievePwd=false">×</a>
+    </div>
+    <div class="mask" v-show="block || retrievePwd"></div>
     </div>
 </template>
 
@@ -37,7 +50,9 @@
     export default {
         data(){
           return{
-            loginform: {}  
+            loginform: {},
+            retrievePwd:false, 
+            email:''
           }
         },
         computed:{
@@ -134,6 +149,30 @@
       		    	console.log('User cancelled login or did not fully authorize.');
       		    }
       	    }, {scope:'email'});
+          },
+          forgotPswd(){
+            this.retrievePwd=true;
+            this.$store.state.loginBox=false;
+          },
+          sendMail(){
+            if(this.email==''){
+            	alert('Please Input You Email.')
+            	return
+            }
+            this.$http.post('/user/forget',{email:this.email})
+            .then(response=> {
+            	console.log(response);
+            	var code = response.code
+                if(code > 0){
+                	alert(response.message);
+                	return
+                }else{
+                	alert('Done! Please check your inbox (' +this.email+ ') for instructions on how to reset your password');
+                	this.retrievePwd=false;
+               	}
+            }).catch(function (error) {
+                console.log(error);
+            });
           }
         }
     }

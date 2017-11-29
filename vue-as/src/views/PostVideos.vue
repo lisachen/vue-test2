@@ -24,11 +24,11 @@
         </div>
         <div class="form-group">
             <label>Title</label>
-            <input type="text" class="form-control" v-model="title" maxlength="120" minlength="5" placeholder="Required 5-120 characters.">
+            <input type="text" class="form-control" v-model="title" maxlength="120" minlength="5" placeholder="Required. 5-120 characters.">
         </div>
         <div class="form-group">
             <label>Description</label>
-            <textarea class="form-control" v-model="description" placeholder="Optional,5-200 characters."></textarea>
+            <textarea class="form-control" v-model="description" placeholder="Optional. 5-200 characters."></textarea>
         </div>
         <div class="form-group">
             <label>Tags</label>
@@ -50,7 +50,7 @@
                 type:'videos',
                 category:'0',
                 YouTubeUrl:'',
-                videoUrl:'mpg,m4v,mp4,flv,3gp,mov,avi,rmvb,mkv,wmv, no mo than 100m',
+                videoUrl:'no mo than 100m',
                 coverUrl:'',
                 title:'',
                 description:'',
@@ -71,6 +71,12 @@
         		url : url,
         		chunk_size: 5*1024*1024,
         		multi_selection: false,
+        		filters: { 
+        	        max_file_size: '100mb', 
+        	        mime_types: [
+        	            {title: "files", extensions: "mpg,m4v,mp4,flv,3gp,mov,avi,rmvb,mkv,wmv"} 
+        	        ] 
+        	    }, 
         		headers : {
         			'version': '2.1.0',
         			'platform': 'IOS',
@@ -93,13 +99,13 @@
         		//标题不能为空
                 let tLen=_this.title.length;
                 if(tLen<5 || tLen>120){
-                    alert('Title:5-120 characters.');
+                    alert('Title: 5-120 characters.');
                     return;
                 }
 
         		//封面不能为空
         		if(_this.coverUrl==''){
-        			alert('cover is require!');
+        			alert('Please upload a cover.');
         			return;
         		}
         		//tag不能为空
@@ -108,14 +114,14 @@
                     alert('Please write tags!');
                     return false;
                 }else{
-                    this.tags=$('.input-tag').val().split(",");
+                    _this.tags=$('.input-tag').val().split(",");
                 }
 
         		_this.isLoading=true;
         		if(_this.category == 1){
         			//上传视频
-        			if(_this.videoUrl=='mpg,m4v,mp4,flv,3gp,mov,avi,rmvb,mkv,wmv, no mo than 100m'){
-            			alert('video is require!');
+        			if(_this.videoUrl=='no mo than 100m'){
+            			alert('Please upload a video.');
             			return;
             		}
         			var res = false;
@@ -146,7 +152,7 @@
                                 	}
                                 	return
                                 }else{
-                                	alert('success')
+                                	alert('succeeded')
                                 	_this.$router.push('/')
                                	}
                             	
@@ -165,7 +171,7 @@
         		}else{
         			//youtube
         			if(_this.YouTubeUrl==''){
-            			alert('video url is require!');
+            			alert('Please Enter YouTube URL.');
             			return;
             		}
         			_this.$http.post('/web/videoCreate',{
@@ -189,7 +195,7 @@
                         	}
                         	return
                         }else{
-                        	alert('success')
+                        	alert('succeeded')
                         	_this.$router.push('/')
                        	}
                     	

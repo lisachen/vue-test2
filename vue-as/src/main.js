@@ -73,5 +73,15 @@ new Vue({
   router,
   store,
   template: '<App/>',
-  components: { App }
+  components: { App },
+  watch:{
+    $route(to,from){
+      if(from.name=="Detail"){
+        document.getElementById('st-2').style.display="none";
+      }
+      if(to.name=="Detail"){
+        document.getElementById('st-2').style.display="block";
+      }
+    }
+  }
 })

@@ -147,7 +147,7 @@
                 let _this = this;
                 let desLen=this.description.length;
                 if(desLen<5 || desLen>300){
-                    alert('Description:5-300 characters.');
+                    alert('Description: 5-300 characters.');
                     return;
                 }
 
@@ -189,7 +189,7 @@
                     	}
                     	return
                     }else{
-                    	alert('success')
+                    	alert('succeeded')
                     	this.$router.push('/')
                    	}
                 }).catch(error=>{

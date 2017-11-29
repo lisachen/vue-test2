@@ -2,7 +2,7 @@
     <li class="active panel">
       <img class="icon" src="../assets/img/app-logo.png" alt="">
       <dl class="info">
-        <dt>Version:1.0</dt>
+        <dt>Version:2.1.2</dt>
         <dd>No one is born into this world to be alone. Anime will always be with us.</dd>
       </dl>
       <div class="detail">

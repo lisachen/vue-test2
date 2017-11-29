@@ -3,10 +3,11 @@
       <div class="title"><strong>My Posts</strong></div>
       <ul class="article-edit-list">
         <li class="item" v-for="item,index in contentList">
-          <router-link :to="{name:'Detail',params:{id:item.feed_id}}" class="tt">{{item.title}}</router-link>
+          <router-link :to="{name:'Detail',params:{id:item.feed_id}}" class="tt">{{item.title}}
           <p class="time">{{item.publish_time}}</p>
           <p class="detail" v-html="item.des"></p>
-          <router-link :to="{name:'Detail',params:{id:item.feed_id}}" class="tt"><img v-lazy="item.cover_pic" :alt="item.title"></router-link>
+          <img v-lazy="item.cover_pic" :alt="item.title">
+          </router-link>
           <p class="tags"><span v-for="tags in item.tags">{{tags.name}}</span></p>
           <div class="edit-btns">
             <router-link v-if="item.feed_type==0" :to="{name:'Reedit0',params:{category:item.category,id:item.feed_id}}" class="mr10"><i class="iconfont icon-edit"></i><em>Edit</em></router-link>

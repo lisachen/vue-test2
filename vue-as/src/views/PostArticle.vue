@@ -6,6 +6,7 @@
         </div>
 
         <div class="form-group form-group-editor">
+        	<label>Text(required)</label>
             <p><iframe id="editor"></iframe></p>
             <input type="file" id="upload_img" class="btn-file"  accept="image/png,image/jpeg,image/gif,image/jpg"/>
             <a  class="btn-upload">Upload</a>
@@ -70,7 +71,7 @@
                    $('.input-tag').addTag(tag); 
                 } 
             },
-            post(url,feed_id,draft_id){	
+            post(url,feed_id,draft_id,msg){	
 				let cate = 1;
 				if(this.category == 3){
 					cate = 3;
@@ -81,9 +82,9 @@
 				}
                 
                 this.content=$('#editor').contents().find('body').html();
-                
+
                	//内容不能为空
-                if(this.content==''){
+                if(this.content=='' || this.content == "</r>" || this.content == "<br>"){
            			alert('content is require!');
            			return false;
            		}
@@ -113,7 +114,7 @@
                     	}
                     	return
                     }else{
-                    	alert('success')
+                    	alert(msg)
                     	this.$router.push('/')
                    	}
                 })
@@ -130,8 +131,9 @@
                 $d.contentEditable = true;
                 $d.open();
                 $d.close();
-                $("body",$d).append("Text(required)");
+                $("body",$d).append("</r>");
                 $("#upload_img").change(function () {
+                	_this.isLoading=true;
                 	var formData = new FormData();
                 	var file = this.files[0];
                 	console.log(file);
@@ -141,6 +143,7 @@
 
                     _this.$http.post('/web/upload',formData)
                     .then(function (response) {
+                    	_this.isLoading=false;
                     	var code = response.code
                         if(code > 0){
                         	if(code == 2016){
@@ -198,7 +201,7 @@
                 }else{
                     this.tags=$('.input-tag').val().split(",");
                 }
-           		this.post('/web/feedCreate',0,this.draftId);
+           		this.post('/web/feedCreate',0,this.draftId,'succeeded');
             },
             saveEdit(){   //修改帖子  带上草稿id  修改成功后删除草稿
             	let tags=$('.input-tag').val();
@@ -208,7 +211,7 @@
                 }else{
                     this.tags=$('.input-tag').val().split(",");
                 }
-                this.post('/web/feedEdit',this.id,this.draftId);
+                this.post('/web/feedEdit',this.id,this.draftId,'succeeded');
             },
             saveDraft(){  //保存草稿
             	let tags=$('.input-tag').val();
@@ -217,7 +220,7 @@
                 }else{
                     this.tags=$('.input-tag').val().split(",");
                 }
-            	this.post('/web/draftCreate',this.id,this.draftId);
+            	this.post('/web/draftCreate',this.id,this.draftId,'Saved');
             },
             
             getDraftContentList(){

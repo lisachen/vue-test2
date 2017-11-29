@@ -19,9 +19,11 @@
           </div>
       </div>
     </section>
-    <div class="bt inner" id="download"><download /></div>
+    <div class="bt inner" id="download"><download /></div> 
+    <remote-js src="http://platform-api.sharethis.com/js/sharethis.js#property=58ad2c4820428700112b0626&product=sticky-share-buttons"></remote-js>
   </div>
 </template>
+
 <script>
   /*可以import +路径css*/
   import TopMenu from './../components/TopMenu'
@@ -30,6 +32,7 @@
   import ContentYoutube from './../components/ContentYoutube'
   import ContentImage from './../components/ContentImage'
   import Download from './../components/Download'
+
   export default {
     data(){
       return{
@@ -38,11 +41,20 @@
       }
     },
     components:{
-      TopMenu,ContentTxt,ContentVdo,ContentYoutube,ContentImage,Download
+      TopMenu,ContentTxt,ContentVdo,ContentYoutube,ContentImage,Download,
+      'remote-js': {
+        render(createElement) {
+          return createElement('script', { attrs: { type: 'text/javascript', src: this.src }});
+        },
+        props: {
+          src: { type: String, required: true },
+        },
+      }
     },
     mounted: function() {
       this.$nextTick(function() {
         this.getItemList();
+        
       })
     },
     updated: function(){
@@ -51,8 +63,10 @@
           // entire view has been re-rendered
           if(this.itemList.feed_type==0){
             this.notVideo=0;
-            this.itemList.content_text=this.itemList.content_text.replace(/\r\n/g,"<br>")
-            this.itemList.content_text=this.itemList.content_text.replace(/\n/g,"<br>");
+            if(this.itemList.content_text){
+              this.itemList.content_text=this.itemList.content_text.replace(/\r\n/g,"<br>")
+              this.itemList.content_text=this.itemList.content_text.replace(/\n/g,"<br>");
+            }
           }else if(this.itemList.feed_type==1){
             if(this.itemList.v_type==1){
               this.notVideo=1;
@@ -81,8 +95,8 @@
   }
 </script>
 
-<style>
-img{
+<style scoped>
+.content img{
   display: block;
 }
 </style>
