@@ -2,7 +2,7 @@
     <div>
         <header-component/>
         <breadcrumb-component>
-            <span>goods</span>
+            <span>Goods</span>
         </breadcrumb-component>
         <div class="accessory-result-page accessory-page">
             <div class="container">
@@ -64,7 +64,6 @@
     import HeaderComponent from './../components/Header'
     import BreadcrumbComponent from './../components/Breadcrumb'
     import FooterComponent from './../components/Footer'
-    import axios from 'axios'
 
     export default {
         data() {
@@ -114,7 +113,7 @@
                     sort: this.sortFlag ? 1 : -1,
                     priceLevel:this.filterFlag
                 }
-                axios.get('/goods', {
+                this.axios.get('/goods', {
                     params: param
                 }).then(response => {
                     let res = response.data;
@@ -165,7 +164,7 @@
                 this.overLayFlag = false;
             },
             addCart(productId){
-                axios.post("/goods/addCart",{
+                this.axios.post("/goods/addCart",{
                     productId:productId
                 }).then(res=>{
                     var res = res.data;
