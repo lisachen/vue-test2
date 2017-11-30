@@ -422,10 +422,16 @@
   margin: 0 10px;
 }
 
-.filter-nav a.cur, .filter-nav a:hover {
-  color: #ee7a23;
+.filter-nav a svg{
+    fill:currentColor;
 }
 
+.filter-nav a.cur, .filter-nav a:hover{
+  color: #ee7a23;
+}
+.filter-nav .icon-arrow-short {
+    transition: all .3s ease-out;
+}
 .filter-nav .sort-up .icon-arrow-short {
   -webkit-transform: rotate(180deg);
   -ms-transform: rotate(180deg);

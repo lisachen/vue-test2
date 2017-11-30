@@ -1,6 +1,6 @@
 <template>
     <div>
-        <header-component/>
+        <header-component :loginModalFlag="loginModalFlag" @closeLoginModal="mdClose" @openLoginModal="mdOpen"/>
         <breadcrumb-component>
             <span>Goods</span>
         </breadcrumb-component>
@@ -8,9 +8,9 @@
             <div class="container">
                 <div class="filter-nav">
                     <span class="sortby">Sort by:</span>
-                    <a href="javascript:void(0)" class="default" :class="{'cur':SortBy=='0'}">Default</a>
-                    <a href="javascript:void(0)" class="price" :class="{'cur':SortBy!=='0'}" @click="sortPrice">Price
-                        <svg class="icon icon-arrow-short">
+                    <a href="javascript:void(0)" class="default" :class="{'cur':SortBy=='0'}" @click="sortDefault">Default</a>
+                    <a href="javascript:void(0)" class="price" :class="{'sort-up':sortFlag,'cur':SortBy=='1'}" @click="sortPrice">Price
+                        <svg class="icon icon-arrow-short" >
                             <use xlink:href="#icon-arrow-short"></use>
                         </svg>
                     </a>
@@ -58,12 +58,20 @@
         </div>
         <div class="md-overlay" v-show="overLayFlag" @click="closeFilterby"></div>
         <footer-component/>
+        <Modal :mdShow="mdShowCart" @close="mdClose">
+            <p slot="massage">成功加入购物车！</p>
+            <div slot="btnGroup" class="btn-wrap">
+                <a class="btn btn--m" @click="mdClose">继续购物</a>
+                <router-link class="btn btn--m" href="javascript:;" to="">查看购物车</router-link>
+            </div>
+        </Modal>
     </div>
 </template>
 <script>
     import HeaderComponent from './../components/Header'
     import BreadcrumbComponent from './../components/Breadcrumb'
     import FooterComponent from './../components/Footer'
+    import Modal from './../components/Modal'
 
     export default {
         data() {
@@ -92,12 +100,15 @@
                 filterFlag: 'All',
                 filterbyShow: false,
                 overLayFlag: false,
+                mdShowCart:false,
+                loginModalFlag:false
             }
         },
         components: {
             HeaderComponent,
             BreadcrumbComponent,
             FooterComponent,
+            Modal
         },
         mounted: function () {
             this.$nextTick(function () {
@@ -113,7 +124,10 @@
                     sort: this.sortFlag ? 1 : -1,
                     priceLevel:this.filterFlag
                 }
-                this.axios.get('/goods', {
+                if(this.SortBy =='0'){
+                    delete param.sort;
+                }
+                this.axios.get('/goods/list', {
                     params: param
                 }).then(response => {
                     let res = response.data;
@@ -143,6 +157,11 @@
                     this.busy = false;
                 }, 1500);
             },
+            sortDefault(){
+                this.page = 1;
+                this.SortBy = 0;
+                this.getGoodsList();
+            },
             sortPrice() {
                 this.sortFlag = !this.sortFlag;
                 this.page = 1;
@@ -169,11 +188,21 @@
                 }).then(res=>{
                     var res = res.data;
                     if(res.status==0){
-                        alert('加入成功');
+                        //alert('加入成功');
+                        this.mdShowCart=true;
+                    }else if(res.status==1001) {//未登录
+                        //alert(res.msg);
+                        this.loginModalFlag=true;
                     }else{
-                        alert('失败');
+                        alert(res.msg);
                     }
                 })
+            },
+            mdClose(){
+                this.mdShowCart=this.loginModalFlag=false;
+            },
+            mdOpen(){
+                this.loginModalFlag=true;
             }
         },
     }

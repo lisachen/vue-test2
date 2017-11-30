@@ -65,5 +65,22 @@ router.post("/loginOut",function(req,res,next){
     });
 });
 
+//校验登入
+router.post("/checkLogin",function(req,res,next){
+    if(req.cookies.userId) {
+        res.json({
+            status: '0',
+            msg: '',
+            result: req.cookies.userName
+        });
+    }else{
+        res.json({
+            status: '1',
+            msg: '未登录',
+            result: ''
+        });
+    }
+});
+
 
 module.exports = router;

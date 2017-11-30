@@ -19,7 +19,7 @@ mongoose.connection.on("disconnected", function () {
 })
 
 //查询商品列表
-router.get('/', function (req, res, next) {
+router.get('/list', function (req, res, next) {
     //goods?page=1&pageSize=5&sort=1&priceLevel=0
     let page = parseInt(req.param('page'));
     let pageSize = parseInt(req.param('pageSize'));
@@ -52,7 +52,10 @@ router.get('/', function (req, res, next) {
     }
 
     let goodsModel = Goods.find(params).skip(skip).limit(pageSize);
-    goodsModel.sort({'salePrice': sort});
+    console.log(sort);
+    if(typeof sort !== 'undefined'){
+        goodsModel.sort({'salePrice': sort});
+    }
     goodsModel.exec(function (err, doc) {
         if (err) {
             res.json({
