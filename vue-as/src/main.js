@@ -76,11 +76,14 @@ new Vue({
   components: { App },
   watch:{
     $route(to,from){
-      if(from.name=="Detail"){
-        document.getElementById('st-2').style.display="none";
-      }
-      if(to.name=="Detail"){
-        document.getElementById('st-2').style.display="block";
+      var st=document.getElementById('st-2');
+      if(st){
+        if(from.name=="Detail"){
+          st.style.display="none";
+        }
+        if(to.name=="Detail"){
+          st.style.display="block";
+        }
       }
     }
   }

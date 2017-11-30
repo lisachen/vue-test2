@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import Home from '../page/home'
+/*import Home from '../page/home'
 import About from '@/views/About'
 import PrivacyPolicy from '@/views/PrivacyPolicy'
 import TermsOfService from '@/views/TermsOfService'
@@ -15,7 +15,25 @@ import Personal from '../page/personal'
 import MyPosts from '@/views/MyPosts'
 import MyDrafts from '@/views/MyDrafts'
 
-import Detail from '../page/detail'
+import Detail from '../page/detail'*/
+
+const Home = resolve => require(['@/page/Home'], resolve) 
+const About = resolve => require(['@/views/About'], resolve) 
+const PrivacyPolicy = resolve => require(['@/views/PrivacyPolicy'], resolve) 
+const TermsOfService = resolve => require(['@/views/TermsOfService'], resolve) 
+
+const Edit = resolve => require(['@/page/Edit'], resolve) 
+const PostArticle = resolve => require(['@/views/PostArticle'], resolve) 
+const PostImages = resolve => require(['@/views/PostImages'], resolve) 
+const PostVideos = resolve => require(['@/views/PostVideos'], resolve) 
+
+const Personal = resolve => require(['@/page/Personal'], resolve) 
+const MyPosts = resolve => require(['@/views/MyPosts'], resolve) 
+const MyDrafts = resolve => require(['@/views/MyDrafts'], resolve) 
+
+const Detail = resolve => require(['@/page/detail'], resolve) 
+
+
 
 Vue.use(Router)
 export default new Router({
@@ -55,7 +73,7 @@ export default new Router({
       component: Home
     },
     {
-      path: '/Detail/:id',
+      path: '/feed/index/:id',
       name: 'Detail',
       component: Detail
     },
