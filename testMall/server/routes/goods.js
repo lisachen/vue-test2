@@ -52,8 +52,8 @@ router.get('/list', function (req, res, next) {
     }
 
     let goodsModel = Goods.find(params).skip(skip).limit(pageSize);
-    console.log(sort);
-    if(typeof sort !== 'undefined'){
+
+    if (typeof sort !== 'undefined') {
         goodsModel.sort({'salePrice': sort});
     }
     goodsModel.exec(function (err, doc) {
@@ -78,7 +78,7 @@ router.get('/list', function (req, res, next) {
 
 //加入购物车
 router.post('/addCart', function (req, res, next) {
-    var userId = '100000077';//假设已登录
+    var userId = req.cookies.userId;
     var productId = req.body.productId;//post的参数通过req.body取
     var User = require('../models/users');
 
@@ -91,14 +91,14 @@ router.post('/addCart', function (req, res, next) {
         } else {
             //console.log("userDoc:" + userDoc);
             if (userDoc) {
-                let productItem='';
-                userDoc.cartList.forEach(function (item,index) {
-                    if(item.productId==productId){
-                        productItem=item;
+                let productItem = '';
+                userDoc.cartList.forEach(function (item, index) {
+                    if (item.productId == productId) {
+                        productItem = item;
                         item.productNum++;
                     }
                 })
-                if(productItem){
+                if (productItem) {
                     userDoc.save(function (err, doc) {
                         if (err) {
                             res.json({
@@ -109,11 +109,11 @@ router.post('/addCart', function (req, res, next) {
                             res.json({
                                 status: '0',
                                 msg: '',
-                                result:'suc',
+                                result: 'suc',
                             })
                         }
                     })
-                }else{
+                } else {
                     Goods.findOne({productId: productId}, function (err1, doc1) {
                         if (err1) {
                             res.json({
@@ -135,7 +135,7 @@ router.post('/addCart', function (req, res, next) {
                                         res.json({
                                             status: '0',
                                             msg: '',
-                                            result:'suc',
+                                            result: 'suc',
                                         })
                                     }
                                 })

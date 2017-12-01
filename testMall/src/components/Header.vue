@@ -34,11 +34,11 @@
                     <a href="javascript:void(0)" class="navbar-link" v-if="nickName" @click="loginOut">Logout</a>
                     <div class="navbar-cart-container">
                         <span class="navbar-cart-count"></span>
-                        <a class="navbar-link navbar-cart-link" href="/#/cart">
+                        <router-link class="navbar-link navbar-cart-link" :to="{'name':'Cart'}">
                             <svg class="navbar-cart-logo">
                               <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-cart"></use>
                             </svg>
-                        </a>
+                        </router-link>
                     </div>
                 </div>
             </div>
@@ -65,7 +65,7 @@
                                 <i class="icon IconPwd"></i>
                                 <input type="password" tabindex="2" name="password" v-model="userPwd"
                                        class="regi_login_input regi_login_input_left login-input-no input_text"
-                                       placeholder="Password">
+                                       placeholder="Password" @keyup.enter="login">
                             </li>
                         </ul>
                     </div>
@@ -79,7 +79,6 @@
     </header>
 </template>
 <script>
-    import './../assets/css/login.css'
 
     export default {
         props:['loginModalFlag'],

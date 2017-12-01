@@ -6,18 +6,19 @@ import router from './router'
 import axios from 'axios'
 import VueLazyLoad from 'vue-lazyload'
 import infiniteScroll from 'vue-infinite-scroll'
+import {currency} from './util/currency'
 
 import './assets/css/base.css'
 import './assets/css/product.css'
+import './assets/css/login.css'
 
+Vue.config.productionTip = false;
 Vue.use(VueLazyLoad,{
     loading:"/static/loading-svg/loading-bars.svg"
-})
-
-Vue.use(infiniteScroll)
-Vue.config.productionTip = false
-
-Vue.prototype.axios = axios
+});
+Vue.prototype.axios = axios;
+Vue.use(infiniteScroll);
+Vue.filter('currency',currency);//全局金额格式化
 
 /* eslint-disable no-new */
 new Vue({

@@ -40,7 +40,7 @@
                                     </div>
                                     <div class="main">
                                         <div class="name">{{item.productName}}</div>
-                                        <div class="price">{{item.salePrice}}</div>
+                                        <div class="price">{{item.salePrice | currency('￥')}}</div>
                                         <div class="btn-area">
                                             <a href="javascript:;" class="btn btn--m" @click="addCart(item.productId)">加入购物车</a>
                                         </div>
@@ -62,7 +62,7 @@
             <p slot="massage">成功加入购物车！</p>
             <div slot="btnGroup" class="btn-wrap">
                 <a class="btn btn--m" @click="mdClose">继续购物</a>
-                <router-link class="btn btn--m" href="javascript:;" to="">查看购物车</router-link>
+                <router-link class="btn btn--m" href="javascript:;" :to="{name:'Cart'}">查看购物车</router-link>
             </div>
         </Modal>
     </div>
