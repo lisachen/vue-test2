@@ -125,7 +125,7 @@
                                 Item total: <span class="total-price">{{totalPrice | currency('￥')}}</span>
                             </div>
                             <div class="btn-wrap">
-                                <a class="btn btn--red">Checkout</a>
+                                <a class="btn btn--red" :class="{'btn--dis':checkedCount<1}" @click="chekout">Checkout</a>
                             </div>
                         </div>
                     </div>
@@ -168,7 +168,6 @@
     }
 </style>
 <script>
-    import './../assets/css/checkout.css'
     import HeaderComponent from './../components/Header'
     import BreadcrumbComponent from './../components/Breadcrumb'
     import FooterComponent from './../components/Footer'
@@ -213,11 +212,6 @@
                 return total;
             }
         },
-        filters: {
-            formatMoney(num) {
-                return '￥ ' + num;
-            }
-        },
         mounted: function () {
             this.$nextTick(function () {
                 this.getCartList();
@@ -258,7 +252,6 @@
                     this.editCart(item);
                 })
             },
-
             editCart(item) {
                 this.axios.post("/users/cartEdit", {
                     productId: item.productId,
@@ -284,6 +277,7 @@
                 this.axios.post("/users/cartDel", {
                     productId: this.curProductId
                 }).then(res => {
+                    var res = res.data;
                     if (res.status == 0) {
                         this.mdShowConfirm = false;
                         alert('删除成功！');
@@ -294,6 +288,11 @@
                 }).catch(err => {
                     console.log(err);
                 })
+            },
+            chekout(){
+                if(this.checkedCount>0){
+                    this.$router.push({path:'Address'});
+                }
             }
         }
     }

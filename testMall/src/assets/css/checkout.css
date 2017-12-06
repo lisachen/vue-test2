@@ -218,7 +218,10 @@ html {
 
 .shipping-addr-more {
   text-align: center; }
-
+.shipping-addr-more.open .i-up-down{
+    transform: rotate(180deg);
+    margin-top: -4px;
+}
 @media only screen and (max-width: 991px) {
   .addr-list li {
     width: 49%;

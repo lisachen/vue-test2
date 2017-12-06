@@ -11,6 +11,7 @@ import {currency} from './util/currency'
 import './assets/css/base.css'
 import './assets/css/product.css'
 import './assets/css/login.css'
+import './assets/css/checkout.css'
 
 Vue.config.productionTip = false;
 Vue.use(VueLazyLoad,{
