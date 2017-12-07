@@ -167,7 +167,9 @@
                         this.cartList = res.result;
                         this.subtotal = 0;
                         this.cartList.forEach(item => {
-                            this.subtotal += item.salePrice * item.productNum;
+                            if(item.checked=='1'){
+                                this.subtotal += item.salePrice * item.productNum;
+                            }
                         })
                         this.orderTotal = this.subtotal - this.shopping - this.discount - this.tax;
                     } else {

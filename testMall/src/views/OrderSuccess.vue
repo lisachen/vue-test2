@@ -21,14 +21,14 @@
                     <h3>Congratulations! <br>Your order is under processing!</h3>
                     <p>
                         <span>Order ID：{{orderId}}</span>
-                        <span>Order total：{{orderTotal}}</span>
+                        <span>Order total：{{orderTotal | currency('￥')}}</span>
                     </p>
                     <div class="order-create-btn-wrap">
                         <div class="btn-l-wrap">
-                            <a href="javascript:;" class="btn btn--m">Cart List</a>
+                            <router-link to="/cart" class="btn btn--m" >Cart List</router-link>
                         </div>
                         <div class="btn-r-wrap">
-                            <a href="javascript:;" class="btn btn--m">Goods List</a>
+                            <router-link to="/" class="btn btn--m">Goods List</router-link>
                         </div>
                     </div>
                 </div>
@@ -44,7 +44,7 @@
     export default {
         data() {
             return {
-                orderId:this.$router.orderId,
+                orderId:this.$route.query.orderId,
                 orderTotal:0,
             }
         },
