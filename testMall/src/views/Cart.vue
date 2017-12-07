@@ -232,11 +232,14 @@
             changeQty(item, way) {
                 if (way > 0) {
                     item.productNum++;
+                    this.$store.commit('updataCartCount',1);
                 } else {
                     item.productNum--;
                     if (item.productNum < 1) {
                         item.productNum = 1;
+                        return false;
                     }
+                    this.$store.commit('updataCartCount',-1);
                 }
                 this.editCart(item);
             },
@@ -280,7 +283,7 @@
                     var res = res.data;
                     if (res.status == 0) {
                         this.mdShowConfirm = false;
-                        alert('删除成功！');
+                        //alert('删除成功！');
                         this.getCartList();
                     } else {
                         console.log(res.msg);

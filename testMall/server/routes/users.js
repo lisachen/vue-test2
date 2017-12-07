@@ -353,11 +353,11 @@ router.get("/getOrder", function (req, res, next) {
             if (doc) {
                 var orderTotal = 0;
                 doc.orderList.forEach(item => {
-                    if (item.orderId == orderId) {
-                        orderTotal = item.orderTotal;
+                        if (item.orderId == orderId) {
+                            orderTotal = item.orderTotal;
+                        }
                     }
-                }
-            )
+                )
                 res.json({
                     status: '0',
                     msg: '',
@@ -370,4 +370,36 @@ router.get("/getOrder", function (req, res, next) {
     })
 })
 
+//获取购物车数量
+router.get("/getCartCount", function (req, res, next) {
+    if (req.cookies && req.cookies.userId) {
+        var userId = req.cookies.userId;
+        User.findOne({userId: userId}, function (err, doc) {
+            if (err) {
+                res.json({
+                    status: '1',
+                    msg: err.message
+                });
+            } else {
+                if (doc) {
+                    var cartCount = 0;
+                    doc.cartList.forEach(item => {
+                            cartCount += parseInt(item.productNum);
+                        }
+                    )
+                    res.json({
+                        status: '0',
+                        msg: '',
+                        result: {
+                            cartCount: cartCount
+                        },
+                    })
+                }
+            }
+        })
+    }
+})
+
 module.exports = router;
+
+

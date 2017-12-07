@@ -33,7 +33,7 @@
                        v-if="!nickName">Login</a>
                     <a href="javascript:void(0)" class="navbar-link" v-if="nickName" @click="loginOut">Logout</a>
                     <div class="navbar-cart-container">
-                        <span class="navbar-cart-count"></span>
+                        <span class="navbar-cart-count" v-if="cartCount>0">{{cartCount}}</span>
                         <router-link class="navbar-link navbar-cart-link" :to="{'name':'Cart'}">
                             <svg class="navbar-cart-logo">
                               <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-cart"></use>
@@ -86,9 +86,17 @@
             return {
                 userName: '',
                 userPwd: '',
-                nickName: '',
+                //nickName: '',
                 errorTip: false,
                 //loginModalFlag: false
+            }
+        },
+        computed:{
+            nickName(){
+                return this.$store.state.nickName
+            },
+            cartCount(){
+                return this.$store.state.cartCount
             }
         },
         mounted: function () {
@@ -109,9 +117,11 @@
                     let res = response.data;
                     if (res.status == '0') {
                         this.errorTip = false;
-                        this.nickName = res.result.userName;
+                        //this.nickName = res.result.userName;
+                        this.$store.commit('updataUserInfo',res.result.userName);
                         //this.loginModalFlag = false;
                         this.closeLoginModal();
+                        this.getCartCount();
                     } else {
                         this.errorTip = true;
                     }
@@ -123,7 +133,9 @@
                 this.axios.post("/users/loginOut").then(response => {
                     let res = response.data;
                     if (res.status == '0') {
-                        this.nickName = '';
+                        //this.nickName = '';
+                        this.$store.commit('updataUserInfo','');
+                        this.$store.commit('initCartCount',0);
                     }
                 })
             },
@@ -131,7 +143,9 @@
                 this.axios.post("/users/checkLogin").then(response => {
                     let res = response.data;
                     if (res.status == '0') {
-                        this.nickName = res.result;
+                        //this.nickName = res.result;
+                        this.$store.commit('updataUserInfo',res.result);
+                        this.getCartCount();
                     }
                 })
             },
@@ -140,6 +154,18 @@
             },
             openLoginModal(){
                 this.$emit('openLoginModal');
+            },
+            getCartCount(){
+                this.axios.get("/users/getCartCount").then(response => {
+                    let res = response.data;
+                    if (res.status == '0') {
+                        this.$store.commit('initCartCount',parseInt(res.result.cartCount));
+                    } else {
+                        console.log(res.msg);
+                    }
+                }).catch(err => {
+                    console.log(err);
+                })
             }
         }
     }

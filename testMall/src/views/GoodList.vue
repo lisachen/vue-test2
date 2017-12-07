@@ -190,6 +190,7 @@
                     if(res.status==0){
                         //alert('加入成功');
                         this.mdShowCart=true;
+                        this.$store.commit('updataCartCount',1);
                     }else if(res.status==1001) {//未登录
                         //alert(res.msg);
                         this.loginModalFlag=true;
