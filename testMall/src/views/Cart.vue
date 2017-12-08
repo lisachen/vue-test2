@@ -97,7 +97,7 @@
                                 <div class="cart-tab-5">
                                     <div class="cart-item-opration">
                                         <a href="javascript:;" class="item-edit-btn"
-                                           @click="delConfirm(item.productId)">
+                                           @click="delConfirm(item)">
                                             <svg class="icon icon-del">
                                                 <use xlink:href="#icon-del"></use>
                                             </svg>
@@ -181,6 +181,7 @@
                 //totalPrice: 0,
                 mdShowConfirm: false,
                 curProductId: '',
+                curProductNum:'',
             }
         },
         components: {
@@ -269,8 +270,9 @@
                     }
                 })
             },
-            delConfirm(productId) {
-                this.curProductId = productId;
+            delConfirm(item) {
+                this.curProductId = item.productId;
+                this.curProductNum=item.productNum;
                 this.mdShowConfirm = true;
             },
             mdClose() {
@@ -285,6 +287,7 @@
                         this.mdShowConfirm = false;
                         //alert('删除成功！');
                         this.getCartList();
+                        this.$store.commit('updataCartCount',-this.curProductNum);
                     } else {
                         console.log(res.msg);
                     }
