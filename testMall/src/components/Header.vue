@@ -121,8 +121,7 @@
                         this.errorTip = false;
                         //this.nickName = res.result.userName;
                         this.$store.commit('updataUserInfo',res.result.userName);
-                        //this.loginModalFlag = false;
-                        this.closeLoginModal();
+                        this.$store.commit('updataLoginModalFlag',false);
                         this.getCartCount();
 
                         //判断需不需要重定向

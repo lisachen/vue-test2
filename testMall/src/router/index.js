@@ -18,9 +18,7 @@ const router = new Router({
             path: '/',
             name: 'GoodList',
             //component: GoodList,
-            component: (resolve) => {//按需加载
-                require(['@/views/GoodList'], resolve)
-            }
+            component: resolve => require(['@/views/GoodList'], resolve)//按需加载
         },
         {
             path: '/cart',
@@ -29,9 +27,7 @@ const router = new Router({
             meta: {
                 requireAuth: true
             },
-            component: (resolve) => {
-                require(['@/views/Cart'], resolve)
-            }
+            component: resolve => require(['@/views/Cart'], resolve)
         },
         {
             path: '/address',
@@ -39,9 +35,7 @@ const router = new Router({
             meta: {
                 requireAuth: true
             },
-            component: (resolve) => {
-                require(['@/views/Address'], resolve)
-            }
+            component: resolve => require(['@/views/Address'], resolve)
         },
         {
             path: '/orderConfirm',
@@ -49,9 +43,7 @@ const router = new Router({
             meta: {
                 requireAuth: true
             },
-            component: (resolve) => {
-                require(['@/views/OrderConfirm'], resolve)
-            }
+            component: resolve => require(['@/views/OrderConfirm'], resolve)
         },
         {
             path: '/orderSuccess',
@@ -59,9 +51,7 @@ const router = new Router({
             meta: {
                 requireAuth: true
             },
-            component: (resolve) => {
-                require(['@/views/OrderSuccess'], resolve)
-            }
+            component: resolve => require(['@/views/OrderSuccess'], resolve)
         }
     ]
 })
