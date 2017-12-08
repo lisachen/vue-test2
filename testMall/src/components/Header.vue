@@ -80,8 +80,9 @@
 </template>
 <script>
 
+    import {mapState} from 'vuex'//vuex里的方法
     export default {
-        props:['loginModalFlag'],
+        //props:['loginModalFlag'],
         data() {
             return {
                 userName: '',
@@ -92,12 +93,13 @@
             }
         },
         computed:{
-            nickName(){
+            ...mapState(['nickName','cartCount','loginModalFlag'])//ES6数组的解析
+            /*nickName(){
                 return this.$store.state.nickName
             },
             cartCount(){
                 return this.$store.state.cartCount
-            }
+            }*/
         },
         mounted: function () {
             this.$nextTick(function () {
@@ -122,6 +124,12 @@
                         //this.loginModalFlag = false;
                         this.closeLoginModal();
                         this.getCartCount();
+
+                        //判断需不需要重定向
+                        let redirect=this.$route.query.redirect;
+                        if(redirect){
+                            this.$router.push(redirect);
+                        }
                     } else {
                         this.errorTip = true;
                     }
@@ -136,6 +144,7 @@
                         //this.nickName = '';
                         this.$store.commit('updataUserInfo','');
                         this.$store.commit('initCartCount',0);
+                        this.$router.push('/');
                     }
                 })
             },
@@ -150,10 +159,16 @@
                 })
             },
             closeLoginModal(){
-                this.$emit('closeLoginModal');
+                //this.$emit('closeLoginModal');
+                this.$store.commit('updataLoginModalFlag',false);
+                let redirect=this.$route.query.redirect;
+                if(redirect){
+                    this.$router.push('/');
+                }
             },
             openLoginModal(){
-                this.$emit('openLoginModal');
+                //this.$emit('openLoginModal');
+                this.$store.commit('updataLoginModalFlag',true);
             },
             getCartCount(){
                 this.axios.get("/users/getCartCount").then(response => {

@@ -26,7 +26,8 @@ Vue.filter('currency', currency);//全局金额格式化
 const store = new Vuex.Store({
     state: {
         nickName: '',
-        cartCount: 0
+        cartCount: 0,
+        loginModalFlag:false
     },
     mutations: {
         updataUserInfo(state, nickName) {
@@ -37,6 +38,9 @@ const store = new Vuex.Store({
         },
         initCartCount(state, cartCount){
             state.cartCount = cartCount;
+        },
+        updataLoginModalFlag(state,Boolean){
+            state.loginModalFlag = Boolean;
         }
     }
 })

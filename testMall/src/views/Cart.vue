@@ -125,7 +125,8 @@
                                 Item total: <span class="total-price">{{totalPrice | currency('￥')}}</span>
                             </div>
                             <div class="btn-wrap">
-                                <a class="btn btn--red" :class="{'btn--dis':checkedCount<1}" @click="chekout">Checkout</a>
+                                <a class="btn btn--red" :class="{'btn--dis':checkedCount<1}"
+                                   @click="chekout">Checkout</a>
                             </div>
                         </div>
                     </div>
@@ -181,7 +182,7 @@
                 //totalPrice: 0,
                 mdShowConfirm: false,
                 curProductId: '',
-                curProductNum:'',
+                curProductNum: '',
             }
         },
         components: {
@@ -204,7 +205,7 @@
                 return i;
             },
             totalPrice() {
-                var total=0;
+                var total = 0;
                 this.cartList.forEach((item, index) => {
                     if (item.checked == 1) {
                         total += item.salePrice * item.productNum;
@@ -231,18 +232,19 @@
                 })
             },
             changeQty(item, way) {
+                var num = 0;
                 if (way > 0) {
                     item.productNum++;
-                    this.$store.commit('updataCartCount',1);
+                    num = 1;
                 } else {
                     item.productNum--;
                     if (item.productNum < 1) {
                         item.productNum = 1;
                         return false;
                     }
-                    this.$store.commit('updataCartCount',-1);
+                    num = -1;
                 }
-                this.editCart(item);
+                this.editCart(item, num);
             },
             checkProduct(item) {
                 item.checked = item.checked == 0 ? 1 : 0;
@@ -256,7 +258,7 @@
                     this.editCart(item);
                 })
             },
-            editCart(item) {
+            editCart(item, num) {
                 this.axios.post("/users/cartEdit", {
                     productId: item.productId,
                     checked: item.checked,
@@ -264,7 +266,9 @@
                 }).then(res => {
                     var res = res.data;
                     if (res.status == 0) {
-
+                        if (num) {
+                            this.$store.commit('updataCartCount', num);
+                        }
                     } else {
                         console.log(res.msg);
                     }
@@ -272,7 +276,7 @@
             },
             delConfirm(item) {
                 this.curProductId = item.productId;
-                this.curProductNum=item.productNum;
+                this.curProductNum = item.productNum;
                 this.mdShowConfirm = true;
             },
             mdClose() {
@@ -287,7 +291,7 @@
                         this.mdShowConfirm = false;
                         //alert('删除成功！');
                         this.getCartList();
-                        this.$store.commit('updataCartCount',-this.curProductNum);
+                        this.$store.commit('updataCartCount', -this.curProductNum);
                     } else {
                         console.log(res.msg);
                     }
@@ -295,9 +299,9 @@
                     console.log(err);
                 })
             },
-            chekout(){
-                if(this.checkedCount>0){
-                    this.$router.push({path:'Address'});
+            chekout() {
+                if (this.checkedCount > 0) {
+                    this.$router.push({path: 'Address'});
                 }
             }
         }

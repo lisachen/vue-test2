@@ -1,6 +1,6 @@
 <template>
     <div>
-        <header-component :loginModalFlag="loginModalFlag" @closeLoginModal="mdClose" @openLoginModal="mdOpen"/>
+        <header-component/>
         <breadcrumb-component>
             <span>Goods</span>
         </breadcrumb-component>
@@ -193,18 +193,15 @@
                         this.$store.commit('updataCartCount',1);
                     }else if(res.status==1001) {//未登录
                         //alert(res.msg);
-                        this.loginModalFlag=true;
+                        this.$store.commit('updataLoginModalFlag',true);
                     }else{
                         alert(res.msg);
                     }
                 })
             },
             mdClose(){
-                this.mdShowCart=this.loginModalFlag=false;
+                this.mdShowCart=false;
             },
-            mdOpen(){
-                this.loginModalFlag=true;
-            }
         },
     }
 </script>
