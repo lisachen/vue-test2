@@ -1,5 +1,5 @@
 <template>
-    <div class="order-success-page">
+    <div class="order-success-page" v-title="orderId+'订单成功'">
         <header-component/>
         <div class="container">
             <div class="page-title-normal">

@@ -1,5 +1,5 @@
 <template>
-    <div class="checkout-page">
+    <div class="checkout-page"  v-title="'选择配送地址'">
         <header-component/>
         <breadcrumb-component>
             <span>Address</span>
@@ -213,7 +213,11 @@
             },
             delConfirm(addressId) {
                 //this.curAddressId = addressId;
-                this.mdShowConfirm = true;
+                if(this.addressList.length>1){
+                    this.mdShowConfirm = true;
+                }else{
+                    alert('至少有一条地址');
+                }
             },
             mdClose() {
                 this.mdShowConfirm = false;

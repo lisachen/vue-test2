@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-title="'首页'">
         <header-component/>
         <breadcrumb-component>
             <span>Goods</span>

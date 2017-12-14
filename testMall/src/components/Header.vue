@@ -82,14 +82,12 @@
 
     import {mapState} from 'vuex'//vuex里的方法
     export default {
-        //props:['loginModalFlag'],
         data() {
             return {
                 userName: '',
                 userPwd: '',
                 //nickName: '',
                 errorTip: false,
-                //loginModalFlag: false
             }
         },
         computed:{
@@ -119,12 +117,21 @@
                     let res = response.data;
                     if (res.status == '0') {
                         this.errorTip = false;
-                        //this.nickName = res.result.userName;
+
+                        //保存登录名到store和localStorage
                         this.$store.commit('updataUserInfo',res.result.userName);
+                        if(!window.localStorage){
+                            alert("浏览器不支持localstorage");
+                            return false;
+                        }else{
+                            var storage=window.localStorage;
+                            storage.setItem("nickName",res.result.userName);
+                        }
+
                         this.$store.commit('updataLoginModalFlag',false);
                         this.getCartCount();
 
-                        //判断需不需要重定向
+                        //判断是从哪个页面跳转的登录
                         let redirect=this.$route.query.redirect;
                         if(redirect){
                             this.$router.push(redirect);
@@ -140,8 +147,14 @@
                 this.axios.post("/users/loginOut").then(response => {
                     let res = response.data;
                     if (res.status == '0') {
-                        //this.nickName = '';
                         this.$store.commit('updataUserInfo','');
+                        if(!window.localStorage){
+                            alert("浏览器不支持localstorage");
+                            return false;
+                        }else{
+                            var storage=window.localStorage;
+                            storage.removeItem("nickName");
+                        }
                         this.$store.commit('initCartCount',0);
                         this.$router.push('/');
                     }
@@ -151,14 +164,19 @@
                 this.axios.post("/users/checkLogin").then(response => {
                     let res = response.data;
                     if (res.status == '0') {
-                        //this.nickName = res.result;
                         this.$store.commit('updataUserInfo',res.result);
+                        if(!window.localStorage){
+                            alert("浏览器不支持localstorage");
+                            return false;
+                        }else{
+                            var storage=window.localStorage;
+                            storage.setItem("nickName",res.result);
+                        }
                         this.getCartCount();
                     }
                 })
             },
             closeLoginModal(){
-                //this.$emit('closeLoginModal');
                 this.$store.commit('updataLoginModalFlag',false);
                 let redirect=this.$route.query.redirect;
                 if(redirect){
@@ -166,7 +184,6 @@
                 }
             },
             openLoginModal(){
-                //this.$emit('openLoginModal');
                 this.$store.commit('updataLoginModalFlag',true);
             },
             getCartCount(){

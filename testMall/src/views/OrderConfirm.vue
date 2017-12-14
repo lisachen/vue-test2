@@ -1,5 +1,5 @@
 <template>
-    <div class="order-confirm-page">
+    <div class="order-confirm-page" v-title="'付款'">
         <header-component/>
         <breadcrumb-component>
             <span>Order Confirm</span>

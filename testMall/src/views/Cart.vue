@@ -1,5 +1,5 @@
 <template>
-    <div class="checkout cart-page">
+    <div class="checkout cart-page"  v-title="'我的购物车'">
         <header-component/>
         <breadcrumb-component>
             <span>Cart</span>
