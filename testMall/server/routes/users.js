@@ -268,6 +268,56 @@ router.post("/addressDel", function (req, res, next) {
     })
 })
 
+//新增地址
+router.post("/addressAdd", function (req, res, next) {
+    var userId = req.cookies.userId;
+    var r1 = Math.floor(Math.random() * 10);
+    var r2 = Math.floor(Math.random() * 10);
+    var sysDate = new Date().Format('yyyyMMddhhmmss');
+    var addressId = r1 + sysDate + r2;
+    var userName = req.body.userName;
+    var streetName = req.body.streetName;
+    var postCode = req.body.postCode;
+    var tel = req.body.tel;
+
+    User.findOne({userId: userId}, function (err, doc) {
+        if (err) {
+            res.json({
+                status: '1',
+                msg: err.message
+            });
+        } else {
+            if (doc) {
+                var newStreet = {
+                    "addressId": addressId,
+                    "userName": userName,
+                    "streetName": streetName,
+                    "postCode": postCode,
+                    "tel": tel,
+                    "isDefault": false
+                }
+                doc.addressList.push(newStreet);
+                doc.save(function (err1, doc1) {
+                    if (err) {
+                        res.json({
+                            status: '1',
+                            msg: err.message
+                        });
+                    } else {
+                        if (doc) {
+                            res.json({
+                                status: '0',
+                                msg: '',
+                                result: ''
+                            })
+                        }
+                    }
+                })
+            }
+        }
+    })
+})
+
 //生成订单
 router.post("/payMent", function (req, res, next) {
     var userId = req.cookies.userId,

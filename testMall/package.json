@@ -15,6 +15,7 @@
   "dependencies": {
     "axios": "^0.17.0",
     "mongoose": "^4.13.4",
+    "mongoose-id-autoinc": "^2013.7.14-4",
     "vue": "^2.5.2",
     "vue-infinite-scroll": "^2.0.2",
     "vue-lazyload": "^1.1.4",

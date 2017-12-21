@@ -89,7 +89,7 @@
                                     <a href="javascript:;" class="addr-set-default-btn"><i>Set default</i></a>
                                 </div>
                             </li>
-                            <li class="addr-new">
+                            <li class="addr-new" @click="addConfirm">
                                 <div class="add-new-inner">
                                     <i class="icon-add">
                                         <svg class="icon icon-add">
@@ -138,6 +138,66 @@
             </div>
         </div>
         <footer-component/>
+        //新增地址
+        <div class="md-modal modal-msg md-modal-transition" :class="{'md-show':addModalShow}"  id="showModalw">
+            <div class="md-modal-inner">
+                <div class="md-top">
+                    <button class="md-close"  @click="addModalShow=false">关闭</button>
+                </div>
+                <div class="md-content">
+                    <div class="confirm-tips">
+                        <div class="error-wrap" v-if="errorTip">
+                            <span class="error error-show">{{errorTxt}}</span>
+                        </div>
+                        <div class="md-form-item">
+                            <label class="md-form-item__label" style="width: 80px;">
+                                *姓名
+                            </label>
+                            <div class="md-form-item__content" style="margin-left: 80px;">
+                                <div  class="el-input">
+                                    <input type="text" autocomplete="off" class="md-input__inner" v-model="newUserName">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-form-item">
+                            <label class="md-form-item__label" style="width: 80px;">
+                                *地址
+                            </label>
+                            <div class="md-form-item__content" style="margin-left: 80px;">
+                                <div  class="el-input">
+                                    <input type="text" autocomplete="off" class="md-input__inner" v-model="newStreetName">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-form-item">
+                            <label class="md-form-item__label" style="width: 80px;">
+                                邮编
+                            </label>
+                            <div class="md-form-item__content" style="margin-left: 80px;">
+                                <div  class="el-input">
+                                    <input type="text" autocomplete="off" class="md-input__inner" v-model="newPostCode">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-form-item">
+                            <label class="md-form-item__label" style="width: 80px;">
+                                *电话号码
+                            </label>
+                            <div class="md-form-item__content" style="margin-left: 80px;">
+                                <div  class="el-input">
+                                    <input type="text" autocomplete="off" class="md-input__inner" v-model="newTel">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="btn-wrap col-2">
+                        <button class="btn btn--s" id="btnModalConfirms" @click="saveAddress">保存</button>
+                        <button class="btn btn--s btn--red" id="btnModalCancels"  @click="addModalShow=false">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="md-overlay"  v-if="addModalShow" @click="addModalShow=false"></div>
         <Modal :mdShow="mdShowConfirm" @close="mdClose">
             <p slot="massage">你确认删除此条地址？</p>
             <div slot="btnGroup" class="btn-wrap">
@@ -162,6 +222,13 @@
                 mdShowConfirm: false,
                 checkFlag:0,
                 limitLen:3,
+                addModalShow:false,
+                newUserName:'',
+                newStreetName:'',
+                newPostCode:'',
+                newTel:'',
+                errorTip:false,
+                errorTxt:''
             }
         },
         components: {HeaderComponent, BreadcrumbComponent, FooterComponent, Modal},
@@ -243,6 +310,32 @@
                 }else{
                     this.limitLen =3;
                 }
+            },
+            addConfirm(){
+                this.addModalShow=true;
+            },
+            saveAddress(){
+                if(this.newUserName==''||this.newStreetName==''||this.newTel==''){
+                    this.errorTip=true;
+                    this.errorTxt='收件人/收件地址/收件电话不能为空！';
+                    return;
+                }
+                this.axios.post("/users/addressAdd", {
+                    "userName": this.newUserName,
+                    "streetName": this.newStreetName,
+                    "postCode": this.newPostCode,
+                    "tel": this.newTel,
+                }).then(response => {
+                    let res = response.data;
+                    if (res.status == '0') {
+                        this.addModalShow=false;
+                        this.getAddressList();
+                    } else {
+                        console.log(res.msg);
+                    }
+                }).catch(err => {
+                    console.log(err);
+                })
             }
         }
     }
