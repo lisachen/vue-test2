@@ -117,17 +117,9 @@
                     let res = response.data;
                     if (res.status == '0') {
                         this.errorTip = false;
-
                         //保存登录名到store和localStorage
                         this.$store.commit('updataUserInfo',res.result.userName);
-                        if(!window.localStorage){
-                            alert("浏览器不支持localstorage");
-                            return false;
-                        }else{
-                            var storage=window.localStorage;
-                            storage.setItem("nickName",res.result.userName);
-                        }
-
+                        this.setLocalstorage("nickName",res.result.userName);
                         this.$store.commit('updataLoginModalFlag',false);
                         this.getCartCount();
 
@@ -148,13 +140,7 @@
                     let res = response.data;
                     if (res.status == '0') {
                         this.$store.commit('updataUserInfo','');
-                        if(!window.localStorage){
-                            alert("浏览器不支持localstorage");
-                            return false;
-                        }else{
-                            var storage=window.localStorage;
-                            storage.removeItem("nickName");
-                        }
+                        this.removeLocalstorage("nickName");
                         this.$store.commit('initCartCount',0);
                         this.$router.push('/');
                     }
@@ -165,14 +151,12 @@
                     let res = response.data;
                     if (res.status == '0') {
                         this.$store.commit('updataUserInfo',res.result);
-                        if(!window.localStorage){
-                            alert("浏览器不支持localstorage");
-                            return false;
-                        }else{
-                            var storage=window.localStorage;
-                            storage.setItem("nickName",res.result);
-                        }
+                        this.setLocalstorage("nickName",res.result);
                         this.getCartCount();
+                    }else if(res.status == '1001'){
+                        this.$store.commit('updataUserInfo','');
+                        this.removeLocalstorage("nickName");
+                        this.$store.commit('initCartCount',0);
                     }
                 })
             },

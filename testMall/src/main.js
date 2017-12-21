@@ -6,6 +6,7 @@ import router from './router'
 import Vuex from 'vuex'
 import store from './store/store'
 import axios from './http'
+import fun from './fun'
 
 import VueLazyLoad from 'vue-lazyload'
 import infiniteScroll from 'vue-infinite-scroll'
@@ -33,7 +34,7 @@ Vue.directive('title', {//自定义指令，定义页面标题
     }
 });
 
-
+Vue.use(fun);
 
 
 
