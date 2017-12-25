@@ -168,7 +168,11 @@ html {
   color: #605F5F;
   line-height: 1.2142; }
 .addr-list li .addr-opration {
+    display: none;
   position: absolute; }
+.addr-list li .addr-opration.addr-default{
+    display: block;
+}
 .addr-list li .addr-opration .icon {
   width: 100%;
   height: 100%;

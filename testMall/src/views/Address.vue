@@ -1,5 +1,5 @@
 <template>
-    <div class="checkout-page"  v-title="'选择配送地址'">
+    <div class="checkout-page" v-title="'选择配送地址'">
         <header-component/>
         <breadcrumb-component>
             <span>Address</span>
@@ -71,12 +71,21 @@
                 <div class="addr-list-wrap">
                     <div class="addr-list">
                         <ul>
-                            <li v-for="(item,index) in addressListFilter" :class="{'check':checkFlag==index}" @click="checkFlag=index;curAddressId=item.addressId">
+                            <li v-for="(item,index) in addressListFilter" :class="{'check':checkFlag==index}"
+                                @click="checkFlag=index;curAddressId=item.addressId">
                                 <dl>
                                     <dt>{{item.userName}}</dt>
                                     <dd class="address">{{item.streetName}}</dd>
                                     <dd class="tel">{{item.tel}}</dd>
                                 </dl>
+                                <div class="addr-opration addr-edit">
+                                    <a href="javascript:;" class="addr-edit-btn" @click="editConfirm(item)">
+                                        <svg class="icon icon-edit">
+                                            <use xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                 xlink:href="#icon-edit"></use>
+                                        </svg>
+                                    </a>
+                                </div>
                                 <div class="addr-opration addr-del">
                                     <a href="javascript:;" class="addr-del-btn" @click="delConfirm(item.addressId)">
                                         <svg class="icon icon-del">
@@ -133,16 +142,18 @@
                     </div>
                 </div>
                 <div class="next-btn-wrap">
-                    <router-link class="btn btn--m btn--red" :to="{'name':'OrderConfirm',query: {'addressId': curAddressId}}">Next</router-link>
+                    <router-link class="btn btn--m btn--red"
+                                 :to="{'name':'OrderConfirm',query: {'addressId': curAddressId}}">Next
+                    </router-link>
                 </div>
             </div>
         </div>
         <footer-component/>
         //新增地址
-        <div class="md-modal modal-msg md-modal-transition" :class="{'md-show':addModalShow}"  id="showModalw">
+        <div class="md-modal modal-msg md-modal-transition" :class="{'md-show':addModalShow}" id="showModalw">
             <div class="md-modal-inner">
                 <div class="md-top">
-                    <button class="md-close"  @click="addModalShow=false">关闭</button>
+                    <button class="md-close" @click="addModalShow=false">关闭</button>
                 </div>
                 <div class="md-content">
                     <div class="confirm-tips">
@@ -154,7 +165,7 @@
                                 *姓名
                             </label>
                             <div class="md-form-item__content" style="margin-left: 80px;">
-                                <div  class="el-input">
+                                <div class="el-input">
                                     <input type="text" autocomplete="off" class="md-input__inner" v-model="newUserName">
                                 </div>
                             </div>
@@ -164,8 +175,9 @@
                                 *地址
                             </label>
                             <div class="md-form-item__content" style="margin-left: 80px;">
-                                <div  class="el-input">
-                                    <input type="text" autocomplete="off" class="md-input__inner" v-model="newStreetName">
+                                <div class="el-input">
+                                    <input type="text" autocomplete="off" class="md-input__inner"
+                                           v-model="newStreetName">
                                 </div>
                             </div>
                         </div>
@@ -174,7 +186,7 @@
                                 邮编
                             </label>
                             <div class="md-form-item__content" style="margin-left: 80px;">
-                                <div  class="el-input">
+                                <div class="el-input">
                                     <input type="text" autocomplete="off" class="md-input__inner" v-model="newPostCode">
                                 </div>
                             </div>
@@ -184,7 +196,7 @@
                                 *电话号码
                             </label>
                             <div class="md-form-item__content" style="margin-left: 80px;">
-                                <div  class="el-input">
+                                <div class="el-input">
                                     <input type="text" autocomplete="off" class="md-input__inner" v-model="newTel">
                                 </div>
                             </div>
@@ -192,12 +204,12 @@
                     </div>
                     <div class="btn-wrap col-2">
                         <button class="btn btn--s" id="btnModalConfirms" @click="saveAddress">保存</button>
-                        <button class="btn btn--s btn--red" id="btnModalCancels"  @click="addModalShow=false">取消</button>
+                        <button class="btn btn--s btn--red" id="btnModalCancels" @click="addModalShow=false">取消</button>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="md-overlay"  v-if="addModalShow" @click="addModalShow=false"></div>
+        <div class="md-overlay" v-if="addModalShow" @click="addModalShow=false"></div>
         <Modal :mdShow="mdShowConfirm" @close="mdClose">
             <p slot="massage">你确认删除此条地址？</p>
             <div slot="btnGroup" class="btn-wrap">
@@ -217,25 +229,27 @@
         data() {
             return {
                 addressList: [],
-                addressCount:'',
-                curAddressId:'',
+                addressCount: '',
+                curAddressId: '',
                 mdShowConfirm: false,
-                checkFlag:0,
-                limitLen:3,
-                addModalShow:false,
-                newUserName:'',
-                newStreetName:'',
-                newPostCode:'',
-                newTel:'',
-                errorTip:false,
-                errorTxt:''
+                checkFlag: 0,
+                limitLen: 3,
+                addModalShow: false,
+                newUserName: '',
+                newStreetName: '',
+                newPostCode: '',
+                newTel: '',
+                errorTip: false,
+                errorTxt: '',
+                isAddAddress:false,
+                curAddressId:''
             }
         },
         components: {HeaderComponent, BreadcrumbComponent, FooterComponent, Modal},
         computed: {
-            addressListFilter(){
-                this.addrIsMore=this.addressList.length>this.limitLen?true:false;
-                return this.addressList.slice(0,this.limitLen);//返回全新的数据
+            addressListFilter() {
+                this.addrIsMore = this.addressList.length > this.limitLen ? true : false;
+                return this.addressList.slice(0, this.limitLen);//返回全新的数据
             }
         },
         mounted: function () {
@@ -249,18 +263,18 @@
                     let res = response.data;
                     if (res.status == '0') {
                         this.addressList = res.result;
-                        var key='',i=0;
-                        this.addressList.forEach(item=>{
-                            if(item.isDefault==true){
-                                var index=this.addressList.indexOf(item);
-                                key=item;
-                                this.addressList.splice(index,1);
-                                this.curAddressId=item.addressId;
+                        var key = '', i = 0;
+                        this.addressList.forEach(item => {
+                            if (item.isDefault == true) {
+                                var index = this.addressList.indexOf(item);
+                                key = item;
+                                this.addressList.splice(index, 1);
+                                this.curAddressId = item.addressId;
                             }
                             i++;
                         })
                         this.addressList.unshift(key);
-                        this.addressCount=i;
+                        this.addressCount = i;
                     } else {
                         console.log(res.msg);
                     }
@@ -280,9 +294,9 @@
             },
             delConfirm(addressId) {
                 //this.curAddressId = addressId;
-                if(this.addressList.length>1){
+                if (this.addressList.length > 1) {
                     this.mdShowConfirm = true;
-                }else{
+                } else {
                     alert('至少有一条地址');
                 }
             },
@@ -304,23 +318,33 @@
                     console.log(err);
                 })
             },
-            addressMore(){
-                if(this.limitLen==3){
+            addressMore() {
+                if (this.limitLen == 3) {
                     this.limitLen = this.addressList.length;
-                }else{
-                    this.limitLen =3;
+                } else {
+                    this.limitLen = 3;
                 }
             },
-            addConfirm(){
-                this.addModalShow=true;
+            addConfirm() {
+                this.isAddAddress=true;
+                this.addModalShow = true;
+                this.newUserName = this.newStreetName = this.newPostCode=this.newTel = '';
+                this.errorTip = false
             },
-            saveAddress(){
-                if(this.newUserName==''||this.newStreetName==''||this.newTel==''){
-                    this.errorTip=true;
-                    this.errorTxt='收件人/收件地址/收件电话不能为空！';
+            saveAddress() {
+                if (this.newUserName == '' || this.newStreetName == '' || this.newTel == '') {
+                    this.errorTip = true;
+                    this.errorTxt = '收件人/收件地址/收件电话不能为空！';
                     return;
                 }
-                this.axios.post("/users/addressAdd", {
+                let postUrl;
+                if(this.isAddAddress){
+                    postUrl='/users/addressAdd';
+                }else{
+                    postUrl='/users/addressEdit';
+                }
+                this.axios.post(postUrl, {
+                    "addressId":this.curAddressId,
                     "userName": this.newUserName,
                     "streetName": this.newStreetName,
                     "postCode": this.newPostCode,
@@ -328,7 +352,7 @@
                 }).then(response => {
                     let res = response.data;
                     if (res.status == '0') {
-                        this.addModalShow=false;
+                        this.addModalShow = false;
                         this.getAddressList();
                     } else {
                         console.log(res.msg);
@@ -336,6 +360,14 @@
                 }).catch(err => {
                     console.log(err);
                 })
+            },
+            editConfirm(item) {
+                this.isAddAddress=false;
+                this.addModalShow = true;
+                this.newUserName = item.userName;
+                this.newStreetName = item.streetName;
+                this.newPostCode= item.postCode
+                this.newTel = item.tel;
             }
         }
     }

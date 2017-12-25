@@ -317,7 +317,40 @@ router.post("/addressAdd", function (req, res, next) {
         }
     })
 })
+//地址修改
+router.post('/addressEdit', function (req, res, next) {
+    var userId = req.cookies.userId;
+    var addressId = req.body.addressId;
+    var userName = req.body.userName;
+    var streetName = req.body.streetName;
+    var postCode = req.body.postCode;
+    var tel = req.body.tel;
 
+    User.update({
+        'userId': userId,
+        'addressList.addressId': addressId
+    }, {
+        'addressList.$.userName': userName,
+        'addressList.$.streetName': streetName,
+        'addressList.$.postCode': postCode,
+        'addressList.$.tel': tel
+    }, function (err, doc) {
+        if (err) {
+            res.json({
+                status: '1',
+                msg: err.message
+            });
+        } else {
+            if (doc) {
+                res.json({
+                    status: '0',
+                    msg: '',
+                    result: ''
+                })
+            }
+        }
+    })
+})
 //生成订单
 router.post("/payMent", function (req, res, next) {
     var userId = req.cookies.userId,
